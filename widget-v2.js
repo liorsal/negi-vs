@@ -6,6 +6,113 @@
  * Usage:
  * <script src="https://cdn.jsdelivr.net/gh/USERNAME/REPO@v2.0.0/widget-v2.js"></script>
  */
+
+/* ---- AUTO-BOOTSTRAP (paste at very top) ---- */
+(function () {
+  // 1) Single-load guard
+  if (window.__liorAccBoot) return;
+  window.__liorAccBoot = true;
+
+  // 2) Safe defaults (avoid "settings is undefined")
+  window.liorAcc = window.liorAcc || {};
+  var defaults = {
+    position: 'right',
+    declaration: '',
+    lang: (document.documentElement && document.documentElement.lang) || 'he',
+    fontUrl: ''
+  };
+  window.liorAcc.settings = Object.assign({}, defaults, window.liorAcc.settings || {});
+
+  // 3) Labels fallback (avoid "labels is not defined")
+  if (typeof window.labels === 'undefined') {
+    window.labels = {
+      incText:"הגדלת טקסט", spacing:"ריווח טקסט",
+      highContrast:"ניגודיות גבוהה", darkContrast:"ניגודיות כהה",
+      grayscale:"גווני אפור", invert:"היפוך צבעים",
+      underlineLinks:"קו תחתון לקישורים", highlightLinks:"הדגשת קישורים",
+      dyslexia:"גופן נגיש (דיסלקסיה)", bigCursor:"סמן עכבר גדול",
+      noAnim:"ביטול אנימציות", focusMode:"פוקוס קריאה",
+      readAloud:"קריאה בקול", visionProfile:"פרופיל כבדי ראייה",
+      dyslexiaProfile:"פרופיל דיסלקציה", cognitiveProfile:"פרופיל קוגניטיבי",
+      reset:"איפוס הגדרות"
+    };
+  }
+
+  // 4) Ensure required elements exist (avoid "widget elements are missing")
+  var d = document;
+  
+  // Wait for body to be available
+  function ensureBody(callback) {
+    if (d.body) {
+      callback();
+    } else {
+      setTimeout(function() { ensureBody(callback); }, 10);
+    }
+  }
+  
+  ensureBody(function() {
+    var root = d.getElementById('lior-acc-root');
+    if (!root) {
+      root = d.createElement('div');
+      root.id = 'lior-acc-root';
+      root.setAttribute('data-position', window.liorAcc.settings.position);
+      if (window.liorAcc.settings.declaration) {
+        root.setAttribute('data-declaration', window.liorAcc.settings.declaration);
+      }
+      d.body.appendChild(root);
+    }
+
+    // minimal skeleton if not present:
+    var live = d.getElementById('lior-acc-live-region');
+    if (!live) {
+      live = d.createElement('div');
+      live.id = 'lior-acc-live-region';
+      live.setAttribute('aria-live','polite');
+      live.setAttribute('aria-atomic','true');
+      live.className = 'lior-acc-sr-only';
+      root.appendChild(live);
+    }
+
+    var btn = d.getElementById('lior-acc-button');
+    if (!btn) {
+      btn = d.createElement('button');
+      btn.id = 'lior-acc-button';
+      btn.type = 'button';
+      btn.setAttribute('aria-haspopup','dialog');
+      btn.setAttribute('aria-controls','lior-acc-panel');
+      btn.setAttribute('aria-expanded','false');
+      btn.setAttribute('aria-label','פתח תפריט נגישות');
+      btn.innerHTML = '<span aria-hidden="true">♿</span>';
+      root.appendChild(btn);
+    }
+
+    var overlay = d.getElementById('lior-acc-overlay');
+    if (!overlay) {
+      overlay = d.createElement('div');
+      overlay.id = 'lior-acc-overlay';
+      overlay.hidden = true;
+      root.appendChild(overlay);
+    }
+
+    var panel = d.getElementById('lior-acc-panel');
+    if (!panel) {
+      panel = d.createElement('div');
+      panel.id = 'lior-acc-panel';
+      panel.setAttribute('role','dialog');
+      panel.setAttribute('aria-modal','true');
+      panel.setAttribute('aria-labelledby','lior-acc-title');
+      panel.hidden = true;
+      panel.innerHTML = '' +
+        '<div class="lior-acc-panel-header">' +
+          '<h2 id="lior-acc-title">תפריט נגישות</h2>' +
+          '<button id="lior-acc-close" type="button" aria-label="סגור">×</button>' +
+        '</div>' +
+        '<div class="lior-acc-panel-body"></div>';
+      root.appendChild(panel);
+    }
+  });
+})();
+
 const labels = {
   increaseText: "הגדלת טקסט",
   spacing: "ריווח טקסט",
