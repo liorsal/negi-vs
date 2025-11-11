@@ -7,6 +7,21 @@
  * <script src="https://cdn.jsdelivr.net/gh/USERNAME/REPO@v2.0.0/widget-v2.js"></script>
  */
 
+// Initialize labels fallback immediately (before any other code)
+if (typeof window.labels === 'undefined') {
+  window.labels = {
+    incText:"הגדלת טקסט", spacing:"ריווח טקסט",
+    highContrast:"ניגודיות גבוהה", darkContrast:"ניגודיות כהה",
+    grayscale:"גווני אפור", invert:"היפוך צבעים",
+    underlineLinks:"קו תחתון לקישורים", highlightLinks:"הדגשת קישורים",
+    dyslexia:"גופן נגיש (דיסלקסיה)", bigCursor:"סמן עכבר גדול",
+    noAnim:"ביטול אנימציות", focusMode:"פוקוס קריאה",
+    readAloud:"קריאה בקול", visionProfile:"פרופיל כבדי ראייה",
+    dyslexiaProfile:"פרופיל דיסלקציה", cognitiveProfile:"פרופיל קוגניטיבי",
+    reset:"איפוס הגדרות"
+  };
+}
+
 /* ---- AUTO-BOOTSTRAP (paste at very top) ---- */
 (function () {
   // 1) Single-load guard
