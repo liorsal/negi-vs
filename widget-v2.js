@@ -6,6 +6,20 @@
  * Usage:
  * <script src="https://cdn.jsdelivr.net/gh/USERNAME/REPO@v2.0.0/widget-v2.js"></script>
  */
+const labels = {
+  increaseText: "הגדלת טקסט",
+  spacing: "ריווח טקסט",
+  highContrast: "ניגודיות גבוהה",
+  darkContrast: "ניגודיות כהה",
+  grayscale: "גווני אפור",
+  invert: "היפוך צבעים",
+  underlineLinks: "קו תחתון לקישורים",
+  highlightLinks: "הדגשת קישורים",
+  dyslexia: "גופן נגיש",
+  bigCursor: "סמן גדול",
+  noAnim: "ביטול אנימציות",
+  reset: "איפוס הגדרות",
+};
 
 (function() {
   'use strict';
