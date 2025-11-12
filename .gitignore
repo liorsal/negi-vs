@@ -1,0 +1,8 @@
+# קבצי בדיקה מקומיים - לא לעלות ל-GitHub
+test.html
+
+# קבצים נוספים שלא רוצים לעלות
+.DS_Store
+*.log
+node_modules/
+

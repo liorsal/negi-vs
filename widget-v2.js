@@ -164,9 +164,7 @@
   --acc-link: #4d4d4d;
 }
 
-a {
-  color: #ffffff;
-}
+/* Removed default link color override - let the page control its own link colors */
 
 :root.acc-inc-text { font-size: 118%; }
 :root.acc-spacing body { letter-spacing: .03em; word-spacing: .08em; line-height: 1.7; }
@@ -331,12 +329,7 @@ a {
   opacity: 1;
 }
 
-body {
-  background: #000000 !important;
-}
-body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-acc-modal *) {
-  color: #ffffff !important;
-}
+/* Removed default body color override - let the page control its own colors */
 
 .lior-acc-panel {
   position: fixed;
@@ -1443,6 +1436,19 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
   // ============================================
   function injectHTML(logoUrl) {
     if (doc.getElementById('lior-acc-root')) return;
+    
+    // Ensure body exists
+    if (!doc.body) {
+      // Wait for body to be available
+      const checkBody = setInterval(() => {
+        if (doc.body) {
+          clearInterval(checkBody);
+          injectHTML(logoUrl);
+        }
+      }, 10);
+      return;
+    }
+    
     const container = doc.createElement('div');
     container.innerHTML = getHTML(logoUrl);
     
@@ -1923,6 +1929,9 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
     });
     const reset = byId('lior-acc-reset');
     if (reset) reset.textContent = t('reset');
+    
+    const declaration = byId('lior-acc-declaration');
+    if (declaration) declaration.textContent = t('accessibilityDeclaration');
   }
 
   // ============================================
@@ -1936,8 +1945,8 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
     injectCSS();
     injectHTML(logoUrl);
     
-    // Wait for DOM to be ready
-    setTimeout(() => {
+    // Wait for elements to be created and DOM to be ready
+    const setupWidget = () => {
       const button = byId('lior-acc-button');
       const overlay = byId('lior-acc-overlay');
       const closeBtn = byId('lior-acc-close');
@@ -1945,7 +1954,8 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
       const reset = byId('lior-acc-reset');
 
       if (!button || !panel) {
-        console.warn('Lior Accessibility: widget elements are missing');
+        // Retry if elements are not yet created
+        setTimeout(setupWidget, 50);
         return;
       }
 
@@ -2046,7 +2056,10 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
       console.log('Lior Accessibility Widget v2.0 loaded');
-    }, 100);
+    };
+    
+    // Start setup - will retry if elements are not ready
+    setupWidget();
   }
 
   // Initialize when DOM is ready
