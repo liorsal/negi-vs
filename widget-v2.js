@@ -46,6 +46,7 @@
       bigCursor: 'סמן עכבר גדול',
       noAnim: 'ביטול אנימציות',
       readingFocus: 'פוקוס קריאה',
+      focusHighlight: 'הדגשת פוקוס',
       textToSpeech: 'קריאה בקול',
       reset: 'איפוס הגדרות',
       saveDefault: 'שמירה כהעדפת ברירת מחדל',
@@ -73,6 +74,7 @@
       bigCursor: 'Big Cursor',
       noAnim: 'Disable Animations',
       readingFocus: 'Reading Focus',
+      focusHighlight: 'Focus Highlight',
       textToSpeech: 'Text to Speech',
       reset: 'Reset Settings',
       saveDefault: 'Save as Default',
@@ -100,6 +102,7 @@
       bigCursor: 'مؤشر كبير',
       noAnim: 'تعطيل الرسوم المتحركة',
       readingFocus: 'تركيز القراءة',
+      focusHighlight: 'تمييز التركيز',
       textToSpeech: 'قراءة النص',
       reset: 'إعادة تعيين',
       saveDefault: 'حفظ كافتراضي',
@@ -204,7 +207,9 @@
 
 /* Removed default link color override - let the page control its own link colors */
 
-:root.acc-inc-text { font-size: 118%; }
+:root.acc-inc-text-1 { font-size: 118%; }
+:root.acc-inc-text-2 { font-size: 150%; }
+:root.acc-inc-text-3 { font-size: 200%; }
 :root.acc-spacing body { letter-spacing: .03em; word-spacing: .08em; line-height: 1.7; }
 .acc-underline-links a:not(.lior-acc-root a):not(.lior-acc-modal a) { text-decoration: underline !important; }
 .acc-highlight-links a:not(.lior-acc-root a):not(.lior-acc-modal a) { outline: 2px solid currentColor; outline-offset: 2px; }
@@ -472,6 +477,80 @@
   outline-offset: var(--lior-acc-focus-offset);
 }
 
+.lior-acc-theme-toggle {
+  border: 0;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000 !important;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+}
+.lior-acc-theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+}
+.lior-acc-theme-toggle:active {
+  transform: scale(0.9);
+}
+.lior-acc-theme-toggle:focus {
+  outline: var(--lior-acc-focus-width) solid var(--lior-acc-accent);
+  outline-offset: var(--lior-acc-focus-offset);
+}
+.lior-acc-theme-toggle:focus:not(:focus-visible) {
+  outline: none;
+}
+.lior-acc-theme-toggle:focus-visible {
+  outline: var(--lior-acc-focus-width) solid var(--lior-acc-accent);
+  outline-offset: var(--lior-acc-focus-offset);
+}
+
+/* Dark mode for widget */
+.lior-acc-root.dark-mode .lior-acc-panel,
+.lior-acc-root.dark-mode .lior-acc-panel-header,
+.lior-acc-root.dark-mode .lior-acc-panel-body,
+.lior-acc-root.dark-mode .lior-acc-toggle,
+.lior-acc-root.dark-mode .lior-acc-reset,
+.lior-acc-root.dark-mode .lior-acc-link,
+.lior-acc-root.dark-mode .lior-acc-profile-toggle,
+.lior-acc-root.dark-mode .lior-acc-category-header,
+.lior-acc-root.dark-mode .lior-acc-category-content {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+.lior-acc-root.dark-mode .lior-acc-panel-header h2,
+.lior-acc-root.dark-mode .lior-acc-section-title,
+.lior-acc-root.dark-mode .lior-acc-toggle,
+.lior-acc-root.dark-mode .lior-acc-reset,
+.lior-acc-root.dark-mode .lior-acc-link,
+.lior-acc-root.dark-mode .lior-acc-profile-toggle,
+.lior-acc-root.dark-mode .lior-acc-category-header {
+  color: #ffffff !important;
+}
+.lior-acc-root.dark-mode .lior-acc-toggle[aria-pressed="true"] {
+  background: #0066cc !important;
+  color: #ffffff !important;
+}
+.lior-acc-root.dark-mode .lior-acc-close,
+.lior-acc-root.dark-mode .lior-acc-theme-toggle {
+  color: #ffffff !important;
+}
+.lior-acc-root.dark-mode .lior-acc-close:hover,
+.lior-acc-root.dark-mode .lior-acc-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.lior-acc-root.dark-mode .lior-acc-button {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #555;
+}
+
 .lior-acc-list {
   display: grid;
   grid-template-columns: 1fr;
@@ -705,6 +784,25 @@
   opacity: 1 !important;
   pointer-events: auto !important;
   z-index: 999999 !important;
+}
+
+/* Focus highlight mode */
+.acc-focus-highlight *:focus,
+.acc-focus-highlight *:focus-visible {
+  outline: 4px solid #ff6b00 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 6px #ff6b00 !important;
+  border-radius: 4px !important;
+  background-color: rgba(255, 107, 0, 0.1) !important;
+}
+.acc-focus-highlight button:focus,
+.acc-focus-highlight a:focus,
+.acc-focus-highlight input:focus,
+.acc-focus-highlight select:focus,
+.acc-focus-highlight textarea:focus {
+  outline: 4px solid #ff6b00 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 6px #ff6b00 !important;
 }
 
 .lior-acc-toast {
@@ -1230,7 +1328,12 @@
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
       <h2 id="lior-acc-title">תפריט נגישות v0.1.3</h2>
-      <button id="lior-acc-close" class="lior-acc-close" type="button" aria-label="סגור">×</button>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button id="lior-acc-theme-toggle" class="lior-acc-theme-toggle" type="button" aria-label="החלף מצב כהה/בהיר" title="מצב כהה/בהיר">
+          <span class="lior-acc-theme-icon">🌙</span>
+        </button>
+        <button id="lior-acc-close" class="lior-acc-close" type="button" aria-label="סגור">×</button>
+      </div>
     </div>
     <div class="lior-acc-panel-body">
       <div class="lior-acc-profiles-section">
@@ -1313,6 +1416,7 @@
             <ul class="lior-acc-list">
               <li><button class="lior-acc-toggle" data-toggle="big-cursor" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">🖱️</span> סמן עכבר גדול</button></li>
               <li><button class="lior-acc-toggle" data-toggle="reading-focus" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">👁️</span> פוקוס קריאה</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="focus-highlight" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">🎯</span> הדגשת פוקוס</button></li>
               <li><button class="lior-acc-toggle" data-action="text-to-speech" type="button"><span class="lior-acc-icon" aria-hidden="true">🔊</span> קריאה בקול</button></li>
             </ul>
           </div>
@@ -1549,7 +1653,8 @@
     'dyslexia',
     'big-cursor',
     'no-anim',
-    'reading-focus'
+    'reading-focus',
+    'focus-highlight'
   ];
 
   const toggleButtons = new Map();
@@ -1683,6 +1788,51 @@
       }
       return;
     }
+    
+    // Special handling for inc-text with levels
+    if (name === 'inc-text') {
+      const currentLevel = toggleState.get('inc-text-level') || 0;
+      const nextLevel = (currentLevel + 1) % 4; // 0, 1, 2, 3, then back to 0
+      
+      // Remove all text size classes
+      root.classList.remove('acc-inc-text-1', 'acc-inc-text-2', 'acc-inc-text-3');
+      
+      if (nextLevel === 0) {
+        toggleState.set('inc-text', false);
+        toggleState.set('inc-text-level', 0);
+        const btn = toggleButtons.get('inc-text');
+        if (btn) btn.setAttribute('aria-pressed', 'false');
+        announce('כובה', 'הגדלת טקסט');
+      } else {
+        root.classList.add(`acc-inc-text-${nextLevel}`);
+        toggleState.set('inc-text', true);
+        toggleState.set('inc-text-level', nextLevel);
+        const btn = toggleButtons.get('inc-text');
+        if (btn) {
+          btn.setAttribute('aria-pressed', 'true');
+          const sizes = ['', '118%', '150%', '200%'];
+          const label = btn.textContent.replace(/\(.*?\)/, '').trim();
+          btn.textContent = `${label} (${sizes[nextLevel]})`;
+        }
+        announce('הופעל', `הגדלת טקסט ${['', '118%', '150%', '200%'][nextLevel]}`);
+      }
+      
+      try {
+        localStorage.setItem(storageKey('inc-text-level'), nextLevel.toString());
+        if (nextLevel === 0) {
+          localStorage.removeItem(storageKey('inc-text'));
+        } else {
+          localStorage.setItem(storageKey('inc-text'), '1');
+        }
+        saveGlobalSettings();
+      } catch (err) {
+        console.warn('Lior Accessibility: unable to persist text size level', err);
+      }
+      
+      updateProfileStates();
+      return;
+    }
+    
     const nextState = !toggleState.get(name);
     applyToggle(name, nextState);
     persistToggle(name, nextState);
@@ -1697,13 +1847,34 @@
       loadGlobalSettings();
     } else {
       TOGGLES.forEach((name) => {
-        let saved = false;
-        try {
-          saved = localStorage.getItem(storageKey(name)) === '1';
-        } catch (err) {
-          saved = false;
+        if (name === 'inc-text') {
+          // Restore text size level
+          try {
+            const level = parseInt(localStorage.getItem(storageKey('inc-text-level')) || '0', 10);
+            if (level > 0 && level <= 3) {
+              root.classList.add(`acc-inc-text-${level}`);
+              toggleState.set('inc-text', true);
+              toggleState.set('inc-text-level', level);
+              const btn = toggleButtons.get('inc-text');
+              if (btn) {
+                btn.setAttribute('aria-pressed', 'true');
+                const sizes = ['', '118%', '150%', '200%'];
+                const label = btn.textContent.replace(/\(.*?\)/, '').trim();
+                btn.textContent = `${label} (${sizes[level]})`;
+              }
+            }
+          } catch (err) {
+            // Ignore
+          }
+        } else {
+          let saved = false;
+          try {
+            saved = localStorage.getItem(storageKey(name)) === '1';
+          } catch (err) {
+            saved = false;
+          }
+          applyToggle(name, saved);
         }
-        applyToggle(name, saved);
       });
     }
   }
@@ -2036,6 +2207,7 @@
                       name === 'big-cursor' ? 'bigCursor' :
                       name === 'no-anim' ? 'noAnim' :
                       name === 'reading-focus' ? 'readingFocus' :
+                      name === 'focus-highlight' ? 'focusHighlight' :
                       name === 'text-to-speech' ? 'textToSpeech' : name;
       const label = t(camelKey);
       if (label && label !== camelKey) {
@@ -2142,6 +2314,51 @@
       }
       if (reset) {
         reset.addEventListener('click', resetAll);
+      }
+
+      // Theme toggle
+      const themeToggle = byId('lior-acc-theme-toggle');
+      if (themeToggle) {
+        // Restore theme
+        try {
+          const savedTheme = localStorage.getItem('lior-acc-theme');
+          if (savedTheme === 'dark') {
+            const rootEl = byId('lior-acc-root');
+            if (rootEl) rootEl.classList.add('dark-mode');
+            const icon = themeToggle.querySelector('.lior-acc-theme-icon');
+            if (icon) icon.textContent = '☀️';
+          }
+        } catch (err) {
+          // Ignore
+        }
+        
+        themeToggle.addEventListener('click', () => {
+          const rootEl = byId('lior-acc-root');
+          if (!rootEl) return;
+          
+          const isDark = rootEl.classList.contains('dark-mode');
+          if (isDark) {
+            rootEl.classList.remove('dark-mode');
+            const icon = themeToggle.querySelector('.lior-acc-theme-icon');
+            if (icon) icon.textContent = '🌙';
+            try {
+              localStorage.setItem('lior-acc-theme', 'light');
+            } catch (err) {
+              // Ignore
+            }
+            showToast('מצב בהיר');
+          } else {
+            rootEl.classList.add('dark-mode');
+            const icon = themeToggle.querySelector('.lior-acc-theme-icon');
+            if (icon) icon.textContent = '☀️';
+            try {
+              localStorage.setItem('lior-acc-theme', 'dark');
+            } catch (err) {
+              // Ignore
+            }
+            showToast('מצב כהה');
+          }
+        });
       }
 
       const accDeclaration = byId('lior-acc-declaration');
