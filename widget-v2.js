@@ -1170,7 +1170,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1</h2>
       <button id="lior-acc-close" class="lior-acc-close" type="button" aria-label="סגור">×</button>
     </div>
     <div class="lior-acc-panel-body">
@@ -1909,7 +1909,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings');
+    if (title) title.textContent = t('settings') + ' v0.1';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
