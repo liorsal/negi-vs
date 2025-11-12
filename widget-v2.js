@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.2.0)
+ * Lior Accessibility Widget v2.0 (v0.1.2)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -1230,7 +1230,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.2.0</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1.2</h2>
       <button id="lior-acc-close" class="lior-acc-close" type="button" aria-label="סגור">×</button>
     </div>
     <div class="lior-acc-panel-body">
@@ -2006,7 +2006,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.2.0';
+    if (title) title.textContent = t('settings') + ' v0.1.2';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -2153,7 +2153,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.2.0 loaded');
+      console.log('Lior Accessibility Widget v0.1.2 loaded');
     };
     
     // Start setup - will retry if elements are not ready
