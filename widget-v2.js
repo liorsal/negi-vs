@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0
+ * Lior Accessibility Widget v2.0 (v0.2.0)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -204,7 +204,9 @@
 
 /* Removed default link color override - let the page control its own link colors */
 
-:root.acc-inc-text { font-size: 118%; }
+:root.acc-inc-text-1 { font-size: 118%; }
+:root.acc-inc-text-2 { font-size: 150%; }
+:root.acc-inc-text-3 { font-size: 200%; }
 :root.acc-spacing body { letter-spacing: .03em; word-spacing: .08em; line-height: 1.7; }
 .acc-underline-links a:not(.lior-acc-root a):not(.lior-acc-modal a) { text-decoration: underline !important; }
 .acc-highlight-links a:not(.lior-acc-root a):not(.lior-acc-modal a) { outline: 2px solid currentColor; outline-offset: 2px; }
@@ -492,16 +494,30 @@
   font-size: 16px;
   color: #000000 !important;
   transition: all 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 .lior-acc-toggle:hover {
   transform: translateX(-4px);
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 .lior-acc-toggle[aria-pressed="true"] {
-  background: #e6f1ff;
-  border-color: var(--lior-acc-accent);
+  background: #0066cc;
+  color: #ffffff !important;
+  border-color: #0052a3;
   border-width: 2px;
   font-weight: 600;
+}
+.lior-acc-toggle[aria-pressed="true"]::after {
+  content: ' ✓';
+  font-weight: bold;
+  color: #ffffff;
+}
+.lior-acc-icon {
+  margin-inline-end: 8px;
+  font-size: 1.1em;
+  display: inline-block;
 }
 .lior-acc-toggle:focus {
   outline: var(--lior-acc-focus-width) solid var(--lior-acc-accent);
@@ -559,8 +575,10 @@
   }
   .lior-acc-button {
     font-size: 22px;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
   }
   .lior-acc-panel-header h2 {
     font-size: 16px !important;
@@ -575,8 +593,11 @@
     margin-bottom: 6px;
   }
   .lior-acc-toggle {
-    font-size: 13px !important;
-    padding: 8px 10px !important;
+    font-size: 14px !important;
+    padding: 12px 14px !important;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
   .lior-acc-mode-button {
     font-size: 13px !important;
@@ -584,8 +605,9 @@
     margin-bottom: 6px;
   }
   .lior-acc-reset {
-    font-size: 13px !important;
-    padding: 8px 10px !important;
+    font-size: 14px !important;
+    padding: 12px 14px !important;
+    min-height: 44px;
   }
   .lior-acc-link {
     font-size: 13px !important;
@@ -1199,7 +1221,7 @@
   // ============================================
   const getHTML = (logoUrl) => `
 <div id="lior-acc-root" class="lior-acc-root lior-acc-pos-right" dir="rtl" lang="he">
-  <div id="lior-acc-live-region" class="lior-acc-sr-only" role="status" aria-atomic="true"></div>
+  <div id="lior-acc-live-region" class="lior-acc-sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
   <button id="lior-acc-button" class="lior-acc-button" type="button"
     aria-haspopup="dialog" aria-controls="lior-acc-panel" aria-expanded="false"
     aria-label="פתח תפריט נגישות">
@@ -1208,7 +1230,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1.1</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.2.0</h2>
       <button id="lior-acc-close" class="lior-acc-close" type="button" aria-label="סגור">×</button>
     </div>
     <div class="lior-acc-panel-body">
@@ -1248,11 +1270,11 @@
           </button>
           <div class="lior-acc-category-content" hidden>
             <ul class="lior-acc-list">
-              <li><button class="lior-acc-toggle" data-toggle="inc-text" aria-pressed="false">הגדלת טקסט</button></li>
-              <li><button class="lior-acc-toggle" data-toggle="high-contrast" aria-pressed="false">ניגודיות גבוהה</button></li>
-              <li><button class="lior-acc-toggle" data-toggle="dark-contrast" aria-pressed="false">ניגודיות כהה</button></li>
-              <li><button class="lior-acc-toggle" data-toggle="grayscale" aria-pressed="false">גווני אפור</button></li>
-              <li><button class="lior-acc-toggle" data-toggle="invert" aria-pressed="false">היפוך צבעים</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="inc-text" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">🔍</span> הגדלת טקסט</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="high-contrast" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">☀️</span> ניגודיות גבוהה</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="dark-contrast" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">🌙</span> ניגודיות כהה</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="grayscale" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">⚫</span> גווני אפור</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="invert" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">🔄</span> היפוך צבעים</button></li>
             </ul>
           </div>
         </div>
@@ -1264,8 +1286,8 @@
           </button>
           <div class="lior-acc-category-content" hidden>
             <ul class="lior-acc-list">
-              <li><button class="lior-acc-toggle" data-toggle="spacing" aria-pressed="false">ריווח טקסט</button></li>
-              <li><button class="lior-acc-toggle" data-toggle="dyslexia" aria-pressed="false">גופן נגיש (דיסלקסיה)</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="spacing" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">📏</span> ריווח טקסט</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="dyslexia" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">📖</span> גופן נגיש (דיסלקסיה)</button></li>
             </ul>
           </div>
         </div>
@@ -1277,8 +1299,8 @@
           </button>
           <div class="lior-acc-category-content" hidden>
             <ul class="lior-acc-list">
-              <li><button class="lior-acc-toggle" data-toggle="underline-links" aria-pressed="false">קו תחתון לקישורים</button></li>
-              <li><button class="lior-acc-toggle" data-toggle="highlight-links" aria-pressed="false">הדגשת קישורים</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="underline-links" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">🔗</span> קו תחתון לקישורים</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="highlight-links" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">✨</span> הדגשת קישורים</button></li>
             </ul>
           </div>
         </div>
@@ -1290,9 +1312,9 @@
           </button>
           <div class="lior-acc-category-content" hidden>
             <ul class="lior-acc-list">
-              <li><button class="lior-acc-toggle" data-toggle="big-cursor" aria-pressed="false">סמן עכבר גדול</button></li>
-              <li><button class="lior-acc-toggle" data-toggle="reading-focus" aria-pressed="false">פוקוס קריאה</button></li>
-              <li><button class="lior-acc-toggle" data-action="text-to-speech" type="button">קריאה בקול</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="big-cursor" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">🖱️</span> סמן עכבר גדול</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="reading-focus" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">👁️</span> פוקוס קריאה</button></li>
+              <li><button class="lior-acc-toggle" data-action="text-to-speech" type="button"><span class="lior-acc-icon" aria-hidden="true">🔊</span> קריאה בקול</button></li>
             </ul>
           </div>
         </div>
@@ -1304,7 +1326,7 @@
           </button>
           <div class="lior-acc-category-content" hidden>
             <ul class="lior-acc-list">
-              <li><button class="lior-acc-toggle" data-toggle="no-anim" aria-pressed="false">ביטול אנימציות</button></li>
+              <li><button class="lior-acc-toggle" data-toggle="no-anim" aria-pressed="false"><span class="lior-acc-icon" aria-hidden="true">⏸️</span> ביטול אנימציות</button></li>
             </ul>
           </div>
         </div>
@@ -1718,7 +1740,20 @@
     }, 3000);
   }
 
+  let currentSpeech = null;
+  let speechButton = null;
+
   function readSelection() {
+    // Stop if already speaking
+    if (speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+      if (speechButton) {
+        speechButton.textContent = speechButton.textContent.replace('⏹️', '🔊').replace('עצירה', 'קריאה בקול');
+      }
+      showToast('קריאה הופסקה');
+      return;
+    }
+
     const selection = window.getSelection().toString();
     if (!selection || selection.trim().length === 0) {
       showToast(t('selectText'));
@@ -1727,7 +1762,31 @@
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(selection);
       utterance.lang = state.currentLang === 'he' ? 'he-IL' : state.currentLang === 'ar' ? 'ar-SA' : 'en-US';
+      
+      utterance.onend = () => {
+        if (speechButton) {
+          speechButton.textContent = speechButton.textContent.replace('⏹️', '🔊').replace('עצירה', 'קריאה בקול');
+        }
+        currentSpeech = null;
+      };
+      
+      utterance.onerror = () => {
+        if (speechButton) {
+          speechButton.textContent = speechButton.textContent.replace('⏹️', '🔊').replace('עצירה', 'קריאה בקול');
+        }
+        currentSpeech = null;
+      };
+      
+      currentSpeech = utterance;
       speechSynthesis.speak(utterance);
+      
+      // Update button text
+      const button = doc.querySelector('[data-action="text-to-speech"]');
+      if (button) {
+        speechButton = button;
+        button.textContent = button.textContent.replace('🔊', '⏹️').replace('קריאה בקול', 'עצירה');
+      }
+      
       showToast(t('textToSpeech') + ' ' + t('enabled'));
     } else {
       showToast('Text-to-Speech לא נתמך בדפדפן זה');
@@ -1947,7 +2006,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1.1';
+    if (title) title.textContent = t('settings') + ' v0.2.0';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -2022,6 +2081,7 @@
         const action = btn.dataset.action;
         btn.addEventListener('click', () => {
           if (action === 'text-to-speech') {
+            speechButton = btn;
             readSelection();
           }
         });
@@ -2093,7 +2153,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v2.0 loaded');
+      console.log('Lior Accessibility Widget v0.2.0 loaded');
     };
     
     // Start setup - will retry if elements are not ready
