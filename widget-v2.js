@@ -164,12 +164,50 @@
   --acc-link: #4d4d4d;
 }
 
+/* Apply contrast and color modes */
+:root.acc-high-contrast body,
+:root.acc-high-contrast body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-acc-modal *) {
+  background: var(--acc-bg) !important;
+  color: var(--acc-fg) !important;
+}
+:root.acc-high-contrast body a:not(.lior-acc-root a):not(.lior-acc-modal a) {
+  color: var(--acc-link) !important;
+}
+
+:root.acc-dark-contrast body,
+:root.acc-dark-contrast body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-acc-modal *) {
+  background: var(--acc-bg) !important;
+  color: var(--acc-fg) !important;
+}
+:root.acc-dark-contrast body a:not(.lior-acc-root a):not(.lior-acc-modal a) {
+  color: var(--acc-link) !important;
+}
+
+:root.acc-invert body,
+:root.acc-invert body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-acc-modal *) {
+  background: var(--acc-bg) !important;
+  color: var(--acc-fg) !important;
+}
+:root.acc-invert body a:not(.lior-acc-root a):not(.lior-acc-modal a) {
+  color: var(--acc-link) !important;
+}
+
+:root.acc-grayscale body,
+:root.acc-grayscale body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-acc-modal *) {
+  filter: grayscale(100%) !important;
+}
+:root.acc-grayscale body img:not(.lior-acc-root img):not(.lior-acc-modal img),
+:root.acc-grayscale body video:not(.lior-acc-root video):not(.lior-acc-modal video),
+:root.acc-grayscale body iframe:not(.lior-acc-root iframe):not(.lior-acc-modal iframe) {
+  filter: grayscale(100%) !important;
+}
+
 /* Removed default link color override - let the page control its own link colors */
 
 :root.acc-inc-text { font-size: 118%; }
 :root.acc-spacing body { letter-spacing: .03em; word-spacing: .08em; line-height: 1.7; }
-.acc-underline-links main a { text-decoration: underline !important; }
-.acc-highlight-links main a { outline: 2px solid currentColor; outline-offset: 2px; }
+.acc-underline-links a:not(.lior-acc-root a):not(.lior-acc-modal a) { text-decoration: underline !important; }
+.acc-highlight-links a:not(.lior-acc-root a):not(.lior-acc-modal a) { outline: 2px solid currentColor; outline-offset: 2px; }
 :root.acc-dyslexia body,
 :root.acc-dyslexia body * {
   font-family: "LiorAccDyslexia", "Atkinson", system-ui, Arial, sans-serif !important;
@@ -1170,7 +1208,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1.1</h2>
       <button id="lior-acc-close" class="lior-acc-close" type="button" aria-label="סגור">×</button>
     </div>
     <div class="lior-acc-panel-body">
@@ -1909,7 +1947,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1';
+    if (title) title.textContent = t('settings') + ' v0.1.1';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
