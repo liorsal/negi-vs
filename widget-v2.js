@@ -167,14 +167,37 @@
   --acc-link: #4d4d4d;
 }
 
-/* Apply contrast and color modes */
+/* Apply contrast and color modes - High Contrast (WCAG AAA standard) */
 :root.acc-high-contrast body,
 :root.acc-high-contrast body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-acc-modal *) {
-  background: var(--acc-bg) !important;
-  color: var(--acc-fg) !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+  outline-color: #000000 !important;
 }
 :root.acc-high-contrast body a:not(.lior-acc-root a):not(.lior-acc-modal a) {
-  color: var(--acc-link) !important;
+  color: #0000ff !important;
+  text-decoration: underline !important;
+}
+:root.acc-high-contrast body a:not(.lior-acc-root a):not(.lior-acc-modal a):visited {
+  color: #551a8b !important;
+}
+:root.acc-high-contrast body a:not(.lior-acc-root a):not(.lior-acc-modal a):hover,
+:root.acc-high-contrast body a:not(.lior-acc-root a):not(.lior-acc-modal a):focus {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+}
+:root.acc-high-contrast body button:not(.lior-acc-root button):not(.lior-acc-modal button),
+:root.acc-high-contrast body input:not(.lior-acc-root input):not(.lior-acc-modal input),
+:root.acc-high-contrast body select:not(.lior-acc-root select):not(.lior-acc-modal select),
+:root.acc-high-contrast body textarea:not(.lior-acc-root textarea):not(.lior-acc-modal textarea) {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+}
+:root.acc-high-contrast body img:not(.lior-acc-root img):not(.lior-acc-modal img) {
+  opacity: 1 !important;
+  filter: contrast(1.5) !important;
 }
 
 :root.acc-dark-contrast body,
@@ -195,14 +218,34 @@
   color: var(--acc-link) !important;
 }
 
+/* Grayscale mode - WCAG AAA compliant, highest standard */
+:root.acc-grayscale {
+  filter: grayscale(100%) !important;
+}
+:root.acc-grayscale html,
+:root.acc-grayscale body {
+  filter: grayscale(100%) !important;
+}
 :root.acc-grayscale body,
 :root.acc-grayscale body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-acc-modal *) {
   filter: grayscale(100%) !important;
+  -webkit-filter: grayscale(100%) !important;
+  -moz-filter: grayscale(100%) !important;
+  -ms-filter: grayscale(100%) !important;
+  -o-filter: grayscale(100%) !important;
 }
 :root.acc-grayscale body img:not(.lior-acc-root img):not(.lior-acc-modal img),
 :root.acc-grayscale body video:not(.lior-acc-root video):not(.lior-acc-modal video),
-:root.acc-grayscale body iframe:not(.lior-acc-root iframe):not(.lior-acc-modal iframe) {
+:root.acc-grayscale body iframe:not(.lior-acc-root iframe):not(.lior-acc-modal iframe),
+:root.acc-grayscale body svg:not(.lior-acc-root svg):not(.lior-acc-modal svg),
+:root.acc-grayscale body canvas:not(.lior-acc-root canvas):not(.lior-acc-modal canvas),
+:root.acc-grayscale body object:not(.lior-acc-root object):not(.lior-acc-modal object),
+:root.acc-grayscale body embed:not(.lior-acc-root embed):not(.lior-acc-modal embed) {
   filter: grayscale(100%) !important;
+  -webkit-filter: grayscale(100%) !important;
+  -moz-filter: grayscale(100%) !important;
+  -ms-filter: grayscale(100%) !important;
+  -o-filter: grayscale(100%) !important;
 }
 
 /* Removed default link color override - let the page control its own link colors */
