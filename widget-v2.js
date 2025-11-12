@@ -3,145 +3,18 @@
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
+ * ✅ FULLY SELF-CONTAINED - No external dependencies except Google Fonts
+ * ✅ Automatically injects all CSS and HTML into the page
+ * ✅ Works with defer attribute
+ * ✅ Compatible with Elementor, WordPress, and any HTML page
+ * 
  * Usage:
- * <script src="https://cdn.jsdelivr.net/gh/USERNAME/REPO@v2.0.0/widget-v2.js"></script>
+ * <script src="https://cdn.jsdelivr.net/gh/liorsal/negi@main/widget-v2.js"
+ *         data-logo-url="https://your-logo-url.com/logo.jpeg"
+ *         defer></script>
+ * 
+ * Optional: data-logo-url - URL to your logo image (defaults to Vercel Storage)
  */
-
-// Initialize labels fallback immediately (before any other code)
-if (typeof window.labels === 'undefined') {
-  window.labels = {
-    incText:"הגדלת טקסט", spacing:"ריווח טקסט",
-    highContrast:"ניגודיות גבוהה", darkContrast:"ניגודיות כהה",
-    grayscale:"גווני אפור", invert:"היפוך צבעים",
-    underlineLinks:"קו תחתון לקישורים", highlightLinks:"הדגשת קישורים",
-    dyslexia:"גופן נגיש (דיסלקסיה)", bigCursor:"סמן עכבר גדול",
-    noAnim:"ביטול אנימציות", focusMode:"פוקוס קריאה",
-    readAloud:"קריאה בקול", visionProfile:"פרופיל כבדי ראייה",
-    dyslexiaProfile:"פרופיל דיסלקציה", cognitiveProfile:"פרופיל קוגניטיבי",
-    reset:"איפוס הגדרות"
-  };
-}
-
-/* ---- AUTO-BOOTSTRAP (paste at very top) ---- */
-(function () {
-  // 1) Single-load guard
-  if (window.__liorAccBoot) return;
-  window.__liorAccBoot = true;
-
-  // 2) Safe defaults (avoid "settings is undefined")
-  window.liorAcc = window.liorAcc || {};
-  var defaults = {
-    position: 'right',
-    declaration: '',
-    lang: (document.documentElement && document.documentElement.lang) || 'he',
-    fontUrl: ''
-  };
-  window.liorAcc.settings = Object.assign({}, defaults, window.liorAcc.settings || {});
-
-  // 3) Labels fallback (avoid "labels is not defined")
-  if (typeof window.labels === 'undefined') {
-    window.labels = {
-      incText:"הגדלת טקסט", spacing:"ריווח טקסט",
-      highContrast:"ניגודיות גבוהה", darkContrast:"ניגודיות כהה",
-      grayscale:"גווני אפור", invert:"היפוך צבעים",
-      underlineLinks:"קו תחתון לקישורים", highlightLinks:"הדגשת קישורים",
-      dyslexia:"גופן נגיש (דיסלקסיה)", bigCursor:"סמן עכבר גדול",
-      noAnim:"ביטול אנימציות", focusMode:"פוקוס קריאה",
-      readAloud:"קריאה בקול", visionProfile:"פרופיל כבדי ראייה",
-      dyslexiaProfile:"פרופיל דיסלקציה", cognitiveProfile:"פרופיל קוגניטיבי",
-      reset:"איפוס הגדרות"
-    };
-  }
-
-  // 4) Ensure required elements exist (avoid "widget elements are missing")
-  var d = document;
-  
-  // Wait for body to be available
-  function ensureBody(callback) {
-    if (d.body) {
-      callback();
-    } else {
-      setTimeout(function() { ensureBody(callback); }, 10);
-    }
-  }
-  
-  ensureBody(function() {
-    var root = d.getElementById('lior-acc-root');
-    if (!root) {
-      root = d.createElement('div');
-      root.id = 'lior-acc-root';
-      root.setAttribute('data-position', window.liorAcc.settings.position);
-      if (window.liorAcc.settings.declaration) {
-        root.setAttribute('data-declaration', window.liorAcc.settings.declaration);
-      }
-      d.body.appendChild(root);
-    }
-
-    // minimal skeleton if not present:
-    var live = d.getElementById('lior-acc-live-region');
-    if (!live) {
-      live = d.createElement('div');
-      live.id = 'lior-acc-live-region';
-      live.setAttribute('aria-live','polite');
-      live.setAttribute('aria-atomic','true');
-      live.className = 'lior-acc-sr-only';
-      root.appendChild(live);
-    }
-
-    var btn = d.getElementById('lior-acc-button');
-    if (!btn) {
-      btn = d.createElement('button');
-      btn.id = 'lior-acc-button';
-      btn.type = 'button';
-      btn.setAttribute('aria-haspopup','dialog');
-      btn.setAttribute('aria-controls','lior-acc-panel');
-      btn.setAttribute('aria-expanded','false');
-      btn.setAttribute('aria-label','פתח תפריט נגישות');
-      btn.innerHTML = '<span aria-hidden="true">♿</span>';
-      root.appendChild(btn);
-    }
-
-    var overlay = d.getElementById('lior-acc-overlay');
-    if (!overlay) {
-      overlay = d.createElement('div');
-      overlay.id = 'lior-acc-overlay';
-      overlay.hidden = true;
-      root.appendChild(overlay);
-    }
-
-    var panel = d.getElementById('lior-acc-panel');
-    if (!panel) {
-      panel = d.createElement('div');
-      panel.id = 'lior-acc-panel';
-      panel.setAttribute('role','dialog');
-      panel.setAttribute('aria-modal','true');
-      panel.setAttribute('aria-labelledby','lior-acc-title');
-      panel.hidden = true;
-      panel.innerHTML = '' +
-        '<div class="lior-acc-panel-header">' +
-          '<h2 id="lior-acc-title">תפריט נגישות</h2>' +
-          '<button id="lior-acc-close" type="button" aria-label="סגור">×</button>' +
-        '</div>' +
-        '<div class="lior-acc-panel-body"></div>';
-      root.appendChild(panel);
-    }
-  });
-})();
-
-const labels = {
-  increaseText: "הגדלת טקסט",
-  spacing: "ריווח טקסט",
-  highContrast: "ניגודיות גבוהה",
-  darkContrast: "ניגודיות כהה",
-  grayscale: "גווני אפור",
-  invert: "היפוך צבעים",
-  underlineLinks: "קו תחתון לקישורים",
-  highlightLinks: "הדגשת קישורים",
-  dyslexia: "גופן נגיש",
-  bigCursor: "סמן גדול",
-  noAnim: "ביטול אנימציות",
-  reset: "איפוס הגדרות",
-};
 
 (function() {
   'use strict';
@@ -1201,11 +1074,6 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
   }
 }
 
-@font-face {
-  font-family: "Rubik";
-  font-weight: 700;
-  src: url("https://fonts.googleapis.com/css2?family=Rubik:wght@700&display=swap");
-}
 `;
 
   // ============================================
@@ -1217,7 +1085,7 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
   <button id="lior-acc-button" class="lior-acc-button" type="button"
     aria-haspopup="dialog" aria-controls="lior-acc-panel" aria-expanded="false"
     aria-label="פתח תפריט נגישות">
-    <img src="${logoUrl || 'data:image/svg+xml;utf8,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%2278%22 height%3D%2278%22 viewBox%3D%220 0 78 78%22%3E%3Ccircle cx%3D%2239%22 cy%3D%2239%22 r%3D%2238%22 fill%3D%22%230066cc%22/%3E%3Ctext x%3D%2239%22 y%3D%2250%22 font-size%3D%2240%22 text-anchor%3D%22middle%22 fill%3D%22white%22%3E%26%239835%3B%3C/text%3E%3C/svg%3E'}" alt="" aria-hidden="true" class="lior-acc-button-icon">
+    <img src="${logoUrl || 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-Z5pQb64527QqrgGwIDqkDyFB7uVs96.jpeg'}" alt="" aria-hidden="true" class="lior-acc-button-icon">
   </button>
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
@@ -1455,6 +1323,28 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
   // ============================================
   function injectCSS() {
     if (doc.getElementById('lior-acc-styles')) return;
+    
+    // Inject Google Fonts link
+    if (!doc.getElementById('lior-acc-fonts')) {
+      const fontLink = doc.createElement('link');
+      fontLink.id = 'lior-acc-fonts';
+      fontLink.rel = 'preconnect';
+      fontLink.href = 'https://fonts.googleapis.com';
+      doc.head.appendChild(fontLink);
+      
+      const fontLink2 = doc.createElement('link');
+      fontLink2.rel = 'preconnect';
+      fontLink2.href = 'https://fonts.gstatic.com';
+      fontLink2.crossOrigin = 'anonymous';
+      doc.head.appendChild(fontLink2);
+      
+      const fontLink3 = doc.createElement('link');
+      fontLink3.rel = 'stylesheet';
+      fontLink3.href = 'https://fonts.googleapis.com/css2?family=Rubik:wght@700&display=swap';
+      doc.head.appendChild(fontLink3);
+    }
+    
+    // Inject CSS styles
     const style = doc.createElement('style');
     style.id = 'lior-acc-styles';
     style.textContent = CSS;
@@ -1466,19 +1356,6 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
   // ============================================
   function injectHTML(logoUrl) {
     if (doc.getElementById('lior-acc-root')) return;
-    
-    // Ensure body exists
-    if (!doc.body) {
-      // Wait for body to be available
-      const checkBody = setInterval(() => {
-        if (doc.body) {
-          clearInterval(checkBody);
-          injectHTML(logoUrl);
-        }
-      }, 10);
-      return;
-    }
-    
     const container = doc.createElement('div');
     container.innerHTML = getHTML(logoUrl);
     
@@ -1498,6 +1375,92 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
   // ============================================
   // JAVASCRIPT FUNCTIONALITY
   // ============================================
+  
+  // Labels for translations
+  const labels = {
+    he: {
+      settings: 'תפריט נגישות',
+      increaseText: 'הגדלת טקסט',
+      spacing: 'ריווח טקסט',
+      highContrast: 'ניגודיות גבוהה',
+      darkContrast: 'ניגודיות כהה',
+      grayscale: 'גווני אפור',
+      invert: 'היפוך צבעים',
+      underlineLinks: 'קו תחתון לקישורים',
+      highlightLinks: 'הדגשת קישורים',
+      dyslexia: 'גופן נגיש (דיסלקסיה)',
+      bigCursor: 'סמן עכבר גדול',
+      noAnim: 'ביטול אנימציות',
+      readingFocus: 'פוקוס קריאה',
+      textToSpeech: 'קריאה בקול',
+      reset: 'איפוס הגדרות',
+      saveDefault: 'שמירה כהעדפת ברירת מחדל',
+      saved: 'נשמר בהצלחה',
+      resetDone: 'בוצע',
+      enabled: 'הופעל',
+      disabled: 'כובה',
+      accessibilityDeclaration: 'הצהרת נגישות',
+      visionMode: 'מצב לכבדי ראייה',
+      dyslexiaMode: 'מצב לדיסלקציה',
+      cognitiveMode: 'מצב לקושי קוגניטיבי',
+      selectText: 'בחר טקסט להקראה'
+    },
+    en: {
+      settings: 'Accessibility Settings',
+      increaseText: 'Increase Text',
+      spacing: 'Text Spacing',
+      highContrast: 'High Contrast',
+      darkContrast: 'Dark Contrast',
+      grayscale: 'Grayscale',
+      invert: 'Invert Colors',
+      underlineLinks: 'Underline Links',
+      highlightLinks: 'Highlight Links',
+      dyslexia: 'Dyslexia Font',
+      bigCursor: 'Big Cursor',
+      noAnim: 'Disable Animations',
+      readingFocus: 'Reading Focus',
+      textToSpeech: 'Text to Speech',
+      reset: 'Reset Settings',
+      saveDefault: 'Save as Default',
+      saved: 'Saved Successfully',
+      resetDone: 'Done',
+      enabled: 'Enabled',
+      disabled: 'Disabled',
+      accessibilityDeclaration: 'Accessibility Statement',
+      visionMode: 'Vision Mode',
+      dyslexiaMode: 'Dyslexia Mode',
+      cognitiveMode: 'Cognitive Mode',
+      selectText: 'Select text to read'
+    },
+    ar: {
+      settings: 'إعدادات إمكانية الوصول',
+      increaseText: 'تكبير النص',
+      spacing: 'تباعد النص',
+      highContrast: 'تباين عالي',
+      darkContrast: 'تباين داكن',
+      grayscale: 'تدرج رمادي',
+      invert: 'عكس الألوان',
+      underlineLinks: 'تسطير الروابط',
+      highlightLinks: 'تمييز الروابط',
+      dyslexia: 'خط عسر القراءة',
+      bigCursor: 'مؤشر كبير',
+      noAnim: 'تعطيل الرسوم المتحركة',
+      readingFocus: 'تركيز القراءة',
+      textToSpeech: 'قراءة النص',
+      reset: 'إعادة تعيين',
+      saveDefault: 'حفظ كافتراضي',
+      saved: 'تم الحفظ بنجاح',
+      resetDone: 'تم',
+      enabled: 'مفعل',
+      disabled: 'معطل',
+      accessibilityDeclaration: 'بيان إمكانية الوصول',
+      visionMode: 'وضع الرؤية',
+      dyslexiaMode: 'وضع عسر القراءة',
+      cognitiveMode: 'وضع الإدراك',
+      selectText: 'اختر النص للقراءة'
+    }
+  };
+
   const byId = (id) => doc.getElementById(id);
   const FOCUSABLE_SELECTOR = [
     'button:not([disabled])',
@@ -1966,13 +1929,14 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
   // ============================================
   function init() {
     const script = doc.currentScript || Array.from(doc.scripts).pop();
-    const logoUrl = script?.getAttribute('data-logo-url') || null;
+    // Use dataset for better compatibility
+    const logoUrl = script?.dataset?.logoUrl || script?.getAttribute('data-logo-url') || null;
     
     injectCSS();
     injectHTML(logoUrl);
     
-    // Wait for elements to be created and DOM to be ready
-    const setupWidget = () => {
+    // Wait for DOM to be ready
+    setTimeout(() => {
       const button = byId('lior-acc-button');
       const overlay = byId('lior-acc-overlay');
       const closeBtn = byId('lior-acc-close');
@@ -1980,8 +1944,7 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
       const reset = byId('lior-acc-reset');
 
       if (!button || !panel) {
-        // Retry if elements are not yet created
-        setTimeout(setupWidget, 50);
+        console.warn('Lior Accessibility: widget elements are missing');
         return;
       }
 
@@ -2082,10 +2045,7 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
       console.log('Lior Accessibility Widget v2.0 loaded');
-    };
-    
-    // Start setup - will retry if elements are not ready
-    setupWidget();
+    }, 100);
   }
 
   // Initialize when DOM is ready
