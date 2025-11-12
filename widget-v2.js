@@ -29,6 +29,93 @@
   const root = doc.documentElement;
 
   // ============================================
+  // LABELS FOR TRANSLATIONS (must be defined early)
+  // ============================================
+  const labels = {
+    he: {
+      settings: 'תפריט נגישות',
+      increaseText: 'הגדלת טקסט',
+      spacing: 'ריווח טקסט',
+      highContrast: 'ניגודיות גבוהה',
+      darkContrast: 'ניגודיות כהה',
+      grayscale: 'גווני אפור',
+      invert: 'היפוך צבעים',
+      underlineLinks: 'קו תחתון לקישורים',
+      highlightLinks: 'הדגשת קישורים',
+      dyslexia: 'גופן נגיש (דיסלקסיה)',
+      bigCursor: 'סמן עכבר גדול',
+      noAnim: 'ביטול אנימציות',
+      readingFocus: 'פוקוס קריאה',
+      textToSpeech: 'קריאה בקול',
+      reset: 'איפוס הגדרות',
+      saveDefault: 'שמירה כהעדפת ברירת מחדל',
+      saved: 'נשמר בהצלחה',
+      resetDone: 'בוצע',
+      enabled: 'הופעל',
+      disabled: 'כובה',
+      accessibilityDeclaration: 'הצהרת נגישות',
+      visionMode: 'מצב לכבדי ראייה',
+      dyslexiaMode: 'מצב לדיסלקציה',
+      cognitiveMode: 'מצב לקושי קוגניטיבי',
+      selectText: 'בחר טקסט להקראה'
+    },
+    en: {
+      settings: 'Accessibility Settings',
+      increaseText: 'Increase Text',
+      spacing: 'Text Spacing',
+      highContrast: 'High Contrast',
+      darkContrast: 'Dark Contrast',
+      grayscale: 'Grayscale',
+      invert: 'Invert Colors',
+      underlineLinks: 'Underline Links',
+      highlightLinks: 'Highlight Links',
+      dyslexia: 'Dyslexia Font',
+      bigCursor: 'Big Cursor',
+      noAnim: 'Disable Animations',
+      readingFocus: 'Reading Focus',
+      textToSpeech: 'Text to Speech',
+      reset: 'Reset Settings',
+      saveDefault: 'Save as Default',
+      saved: 'Saved Successfully',
+      resetDone: 'Done',
+      enabled: 'Enabled',
+      disabled: 'Disabled',
+      accessibilityDeclaration: 'Accessibility Statement',
+      visionMode: 'Vision Mode',
+      dyslexiaMode: 'Dyslexia Mode',
+      cognitiveMode: 'Cognitive Mode',
+      selectText: 'Select text to read'
+    },
+    ar: {
+      settings: 'إعدادات إمكانية الوصول',
+      increaseText: 'تكبير النص',
+      spacing: 'تباعد النص',
+      highContrast: 'تباين عالي',
+      darkContrast: 'تباين داكن',
+      grayscale: 'تدرج رمادي',
+      invert: 'عكس الألوان',
+      underlineLinks: 'تسطير الروابط',
+      highlightLinks: 'تمييز الروابط',
+      dyslexia: 'خط عسر القراءة',
+      bigCursor: 'مؤشر كبير',
+      noAnim: 'تعطيل الرسوم المتحركة',
+      readingFocus: 'تركيز القراءة',
+      textToSpeech: 'قراءة النص',
+      reset: 'إعادة تعيين',
+      saveDefault: 'حفظ كافتراضي',
+      saved: 'تم الحفظ بنجاح',
+      resetDone: 'تم',
+      enabled: 'مفعل',
+      disabled: 'معطل',
+      accessibilityDeclaration: 'بيان إمكانية الوصول',
+      visionMode: 'وضع الرؤية',
+      dyslexiaMode: 'وضع عسر القراءة',
+      cognitiveMode: 'وضع الإدراك',
+      selectText: 'اختر النص للقراءة'
+    }
+  };
+
+  // ============================================
   // CSS STYLES
   // ============================================
   const CSS = `
@@ -1375,92 +1462,6 @@ body *:not(.lior-acc-root):not(.lior-acc-root *):not(.lior-acc-modal):not(.lior-
   // ============================================
   // JAVASCRIPT FUNCTIONALITY
   // ============================================
-  
-  // Labels for translations
-  const labels = {
-    he: {
-      settings: 'תפריט נגישות',
-      increaseText: 'הגדלת טקסט',
-      spacing: 'ריווח טקסט',
-      highContrast: 'ניגודיות גבוהה',
-      darkContrast: 'ניגודיות כהה',
-      grayscale: 'גווני אפור',
-      invert: 'היפוך צבעים',
-      underlineLinks: 'קו תחתון לקישורים',
-      highlightLinks: 'הדגשת קישורים',
-      dyslexia: 'גופן נגיש (דיסלקסיה)',
-      bigCursor: 'סמן עכבר גדול',
-      noAnim: 'ביטול אנימציות',
-      readingFocus: 'פוקוס קריאה',
-      textToSpeech: 'קריאה בקול',
-      reset: 'איפוס הגדרות',
-      saveDefault: 'שמירה כהעדפת ברירת מחדל',
-      saved: 'נשמר בהצלחה',
-      resetDone: 'בוצע',
-      enabled: 'הופעל',
-      disabled: 'כובה',
-      accessibilityDeclaration: 'הצהרת נגישות',
-      visionMode: 'מצב לכבדי ראייה',
-      dyslexiaMode: 'מצב לדיסלקציה',
-      cognitiveMode: 'מצב לקושי קוגניטיבי',
-      selectText: 'בחר טקסט להקראה'
-    },
-    en: {
-      settings: 'Accessibility Settings',
-      increaseText: 'Increase Text',
-      spacing: 'Text Spacing',
-      highContrast: 'High Contrast',
-      darkContrast: 'Dark Contrast',
-      grayscale: 'Grayscale',
-      invert: 'Invert Colors',
-      underlineLinks: 'Underline Links',
-      highlightLinks: 'Highlight Links',
-      dyslexia: 'Dyslexia Font',
-      bigCursor: 'Big Cursor',
-      noAnim: 'Disable Animations',
-      readingFocus: 'Reading Focus',
-      textToSpeech: 'Text to Speech',
-      reset: 'Reset Settings',
-      saveDefault: 'Save as Default',
-      saved: 'Saved Successfully',
-      resetDone: 'Done',
-      enabled: 'Enabled',
-      disabled: 'Disabled',
-      accessibilityDeclaration: 'Accessibility Statement',
-      visionMode: 'Vision Mode',
-      dyslexiaMode: 'Dyslexia Mode',
-      cognitiveMode: 'Cognitive Mode',
-      selectText: 'Select text to read'
-    },
-    ar: {
-      settings: 'إعدادات إمكانية الوصول',
-      increaseText: 'تكبير النص',
-      spacing: 'تباعد النص',
-      highContrast: 'تباين عالي',
-      darkContrast: 'تباين داكن',
-      grayscale: 'تدرج رمادي',
-      invert: 'عكس الألوان',
-      underlineLinks: 'تسطير الروابط',
-      highlightLinks: 'تمييز الروابط',
-      dyslexia: 'خط عسر القراءة',
-      bigCursor: 'مؤشر كبير',
-      noAnim: 'تعطيل الرسوم المتحركة',
-      readingFocus: 'تركيز القراءة',
-      textToSpeech: 'قراءة النص',
-      reset: 'إعادة تعيين',
-      saveDefault: 'حفظ كافتراضي',
-      saved: 'تم الحفظ بنجاح',
-      resetDone: 'تم',
-      enabled: 'مفعل',
-      disabled: 'معطل',
-      accessibilityDeclaration: 'بيان إمكانية الوصول',
-      visionMode: 'وضع الرؤية',
-      dyslexiaMode: 'وضع عسر القراءة',
-      cognitiveMode: 'وضع الإدراك',
-      selectText: 'اختر النص للقراءة'
-    }
-  };
-
   const byId = (id) => doc.getElementById(id);
   const FOCUSABLE_SELECTOR = [
     'button:not([disabled])',
