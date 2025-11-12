@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.1.2)
+ * Lior Accessibility Widget v2.0 (v0.1.3)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -204,9 +204,7 @@
 
 /* Removed default link color override - let the page control its own link colors */
 
-:root.acc-inc-text-1 { font-size: 118%; }
-:root.acc-inc-text-2 { font-size: 150%; }
-:root.acc-inc-text-3 { font-size: 200%; }
+:root.acc-inc-text { font-size: 118%; }
 :root.acc-spacing body { letter-spacing: .03em; word-spacing: .08em; line-height: 1.7; }
 .acc-underline-links a:not(.lior-acc-root a):not(.lior-acc-modal a) { text-decoration: underline !important; }
 .acc-highlight-links a:not(.lior-acc-root a):not(.lior-acc-modal a) { outline: 2px solid currentColor; outline-offset: 2px; }
@@ -503,16 +501,17 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 .lior-acc-toggle[aria-pressed="true"] {
-  background: #0066cc;
-  color: #ffffff !important;
-  border-color: #0052a3;
+  background: #e6f1ff;
+  color: #000000 !important;
+  border-color: var(--lior-acc-accent);
   border-width: 2px;
   font-weight: 600;
 }
 .lior-acc-toggle[aria-pressed="true"]::after {
   content: ' ✓';
   font-weight: bold;
-  color: #ffffff;
+  color: var(--lior-acc-accent);
+  margin-inline-start: 4px;
 }
 .lior-acc-icon {
   margin-inline-end: 8px;
@@ -1230,7 +1229,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1.2</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1.3</h2>
       <button id="lior-acc-close" class="lior-acc-close" type="button" aria-label="סגור">×</button>
     </div>
     <div class="lior-acc-panel-body">
@@ -1740,57 +1739,76 @@
     }, 3000);
   }
 
-  let currentSpeech = null;
+  let isSpeaking = false;
   let speechButton = null;
 
   function readSelection() {
-    // Stop if already speaking
-    if (speechSynthesis.speaking) {
+    // Check if speech synthesis is supported
+    if (!('speechSynthesis' in window)) {
+      showToast('קריאה בקול לא נתמך בדפדפן זה');
+      return;
+    }
+
+    // If already speaking, stop it
+    if (isSpeaking || speechSynthesis.speaking) {
       speechSynthesis.cancel();
+      isSpeaking = false;
       if (speechButton) {
-        speechButton.textContent = speechButton.textContent.replace('⏹️', '🔊').replace('עצירה', 'קריאה בקול');
+        const icon = speechButton.querySelector('.lior-acc-icon');
+        if (icon) icon.textContent = '🔊';
       }
       showToast('קריאה הופסקה');
       return;
     }
 
-    const selection = window.getSelection().toString();
-    if (!selection || selection.trim().length === 0) {
-      showToast(t('selectText'));
+    // Get selected text
+    const selection = window.getSelection().toString().trim();
+    if (!selection || selection.length === 0) {
+      showToast('אנא בחר טקסט להקראה');
       return;
     }
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(selection);
-      utterance.lang = state.currentLang === 'he' ? 'he-IL' : state.currentLang === 'ar' ? 'ar-SA' : 'en-US';
-      
-      utterance.onend = () => {
-        if (speechButton) {
-          speechButton.textContent = speechButton.textContent.replace('⏹️', '🔊').replace('עצירה', 'קריאה בקול');
-        }
-        currentSpeech = null;
-      };
-      
-      utterance.onerror = () => {
-        if (speechButton) {
-          speechButton.textContent = speechButton.textContent.replace('⏹️', '🔊').replace('עצירה', 'קריאה בקול');
-        }
-        currentSpeech = null;
-      };
-      
-      currentSpeech = utterance;
-      speechSynthesis.speak(utterance);
-      
-      // Update button text
-      const button = doc.querySelector('[data-action="text-to-speech"]');
-      if (button) {
-        speechButton = button;
-        button.textContent = button.textContent.replace('🔊', '⏹️').replace('קריאה בקול', 'עצירה');
+
+    // Create utterance
+    const utterance = new SpeechSynthesisUtterance(selection);
+    utterance.lang = state.currentLang === 'he' ? 'he-IL' : state.currentLang === 'ar' ? 'ar-SA' : 'en-US';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    
+    // Handle end of speech
+    utterance.onend = () => {
+      isSpeaking = false;
+      if (speechButton) {
+        const icon = speechButton.querySelector('.lior-acc-icon');
+        if (icon) icon.textContent = '🔊';
       }
-      
-      showToast(t('textToSpeech') + ' ' + t('enabled'));
-    } else {
-      showToast('Text-to-Speech לא נתמך בדפדפן זה');
+    };
+    
+    // Handle errors
+    utterance.onerror = (event) => {
+      isSpeaking = false;
+      if (speechButton) {
+        const icon = speechButton.querySelector('.lior-acc-icon');
+        if (icon) icon.textContent = '🔊';
+      }
+      showToast('שגיאה בקריאה בקול');
+    };
+    
+    // Start speaking
+    isSpeaking = true;
+    speechSynthesis.speak(utterance);
+    
+    // Update button icon
+    const button = doc.querySelector('[data-action="text-to-speech"]');
+    if (button) {
+      speechButton = button;
+      const icon = button.querySelector('.lior-acc-icon');
+      if (icon) {
+        icon.textContent = '⏹️';
+      }
     }
+    
+    showToast('מקריא את הטקסט הנבחר...');
   }
 
   function openPanel() {
@@ -2006,7 +2024,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1.2';
+    if (title) title.textContent = t('settings') + ' v0.1.3';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -2153,7 +2171,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.1.2 loaded');
+      console.log('Lior Accessibility Widget v0.1.3 loaded');
     };
     
     // Start setup - will retry if elements are not ready
