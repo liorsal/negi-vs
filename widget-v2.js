@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.1.5)
+ * Lior Accessibility Widget v2.0 (v0.52.0)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -1191,43 +1191,53 @@
   .lior-acc-profiles-list {
     flex-direction: row;
     overflow-x: auto;
+    overflow-y: visible;
     padding: 0 0 12px 0;
     gap: 8px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    width: 100%;
+    display: flex !important;
   }
   .lior-acc-profiles-list::-webkit-scrollbar {
     display: none;
   }
-  .lior-acc-profile-toggle {
+  .lior-acc-profiles-list .lior-acc-profile-toggle {
     white-space: nowrap;
     padding: 8px 16px;
     border-radius: 999px;
     border: 1.5px solid #E5E5EA;
     font-size: 14px;
     min-width: auto;
+    width: auto;
     flex-shrink: 0;
     margin-bottom: 0;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
-  .lior-acc-profile-toggle:active {
+  .lior-acc-profiles-list .lior-acc-profile-toggle:active {
     transform: scale(0.95);
   }
-  .lior-acc-profile-toggle[aria-pressed="true"],
-  .lior-acc-profile-toggle.active {
+  .lior-acc-profiles-list .lior-acc-profile-toggle[aria-pressed="true"],
+  .lior-acc-profiles-list .lior-acc-profile-toggle.active {
     background: var(--lior-acc-accent) !important;
     color: #ffffff !important;
     border-color: var(--lior-acc-accent);
   }
-  .lior-acc-profile-icon {
+  .lior-acc-profiles-list .lior-acc-profile-icon {
     display: none;
   }
-  .lior-acc-profile-switch {
+  .lior-acc-profiles-list .lior-acc-profile-switch {
     display: none;
   }
-  .lior-acc-profile-delete {
+  .lior-acc-profiles-list .lior-acc-profile-delete {
     display: none;
+  }
+  .lior-acc-profiles-list .lior-acc-profile-name {
+    flex: none;
   }
 }
 .lior-acc-profiles-list .lior-acc-profile-toggle {
@@ -1862,7 +1872,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1.5</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.52.0</h2>
       <div style="display: flex; gap: 8px; align-items: center;">
         <button id="lior-acc-theme-toggle" class="lior-acc-theme-toggle" type="button" aria-label="החלף מצב כהה/בהיר" title="מצב כהה/בהיר">
           <span class="lior-acc-theme-icon">${icons.moon}</span>
@@ -3359,7 +3369,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1.5';
+    if (title) title.textContent = t('settings') + ' v0.52.0';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -3579,7 +3589,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.1.5 loaded');
+      console.log('Lior Accessibility Widget v0.52.0 loaded');
     };
     
     // Start setup - will retry if elements are not ready
