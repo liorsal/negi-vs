@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.1.46)
+ * Lior Accessibility Widget v2.0 (v0.1.47)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -760,6 +760,12 @@
   align-items: center;
   gap: 10px;
   justify-content: flex-end;
+  text-align: right;
+  direction: rtl;
+}
+.lior-acc-reset > span:last-child {
+  text-align: right;
+  flex: 1;
 }
 .lior-acc-reset-icon {
   width: 18px;
@@ -1326,6 +1332,11 @@
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   animation: fadeInUp 0.5s ease 0.7s both;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  direction: rtl;
+}
+.lior-acc-link > span:last-child {
+  text-align: right;
+  flex: 1;
 }
 .lior-acc-link-icon {
   width: 18px;
@@ -1684,7 +1695,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1.46</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1.47</h2>
       <div style="display: flex; gap: 8px; align-items: center;">
         <button id="lior-acc-theme-toggle" class="lior-acc-theme-toggle" type="button" aria-label="החלף מצב כהה/בהיר" title="מצב כהה/בהיר">
           <span class="lior-acc-theme-icon">${icons.moon}</span>
@@ -3170,7 +3181,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1.46';
+    if (title) title.textContent = t('settings') + ' v0.1.47';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -3379,7 +3390,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.1.46 loaded');
+      console.log('Lior Accessibility Widget v0.1.47 loaded');
     };
     
     // Start setup - will retry if elements are not ready
