@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.1.48)
+ * Lior Accessibility Widget v2.0 (v0.1.5)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -324,6 +324,14 @@
   .lior-acc-profiles-list,
   .lior-acc-category {
     animation: none !important;
+  }
+  .lior-acc-toggle:active,
+  .lior-acc-profile-toggle:active,
+  .lior-acc-reset:active,
+  .lior-acc-link:active,
+  .lior-acc-category-header:active,
+  .lior-acc-save-profile-btn:active {
+    transform: none !important;
   }
 }
 
@@ -801,18 +809,51 @@
   outline-offset: var(--lior-acc-focus-offset);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .lior-acc-panel {
-    width: 85vw;
-    max-width: 320px;
-    bottom: 10px;
-    right: 7.5vw;
-    max-height: 90vh;
-    padding: 10px;
+    bottom: 0;
+    top: auto;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 85vh;
+    max-height: 85vh;
+    border-radius: 24px 24px 0 0;
+    padding: 0;
+    transform: translateY(100%);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease-out;
+  }
+  .lior-acc-panel.show,
+  .lior-acc-panel:not([hidden]) {
+    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  .lior-acc-panel-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--lior-acc-border);
+    position: relative;
+  }
+  .lior-acc-panel-header::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+  }
+  .lior-acc-panel-body {
+    max-height: calc(85vh - 60px);
+    overflow-y: auto;
+    padding: 16px 20px;
+    -webkit-overflow-scrolling: touch;
   }
   .lior-acc-pos-left .lior-acc-panel {
-    left: 7.5vw;
-    right: auto;
+    left: 0;
+    right: 0;
   }
   .lior-acc-button {
     font-size: 22px;
@@ -822,7 +863,7 @@
     min-height: 48px;
   }
   .lior-acc-panel-header h2 {
-    font-size: 16px !important;
+    font-size: 18px !important;
   }
   .lior-acc-close {
     font-size: 24px !important;
@@ -835,10 +876,16 @@
   }
   .lior-acc-toggle {
     font-size: 14px !important;
-    padding: 12px 14px !important;
-    min-height: 44px;
+    padding: 14px 16px !important;
+    min-height: 56px;
     display: flex;
     align-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lior-acc-toggle:active {
+    transform: scale(0.98);
+    transition: transform 0.08s ease;
   }
   .lior-acc-mode-button {
     font-size: 13px !important;
@@ -847,12 +894,21 @@
   }
   .lior-acc-reset {
     font-size: 14px !important;
-    padding: 12px 14px !important;
-    min-height: 44px;
+    padding: 14px 16px !important;
+    min-height: 56px;
+  }
+  .lior-acc-reset:active {
+    transform: scale(0.98);
+    transition: transform 0.08s ease;
   }
   .lior-acc-link {
-    font-size: 13px !important;
-    padding: 8px 10px !important;
+    font-size: 14px !important;
+    padding: 14px 16px !important;
+    min-height: 56px;
+  }
+  .lior-acc-link:active {
+    transform: scale(0.98);
+    transition: transform 0.08s ease;
   }
   .lior-acc-list {
     gap: 6px;
@@ -867,6 +923,37 @@
     padding: 10px 12px !important;
   }
   .lior-acc-section-title {
+    font-size: 15px !important;
+    margin-top: 20px;
+    margin-bottom: 12px;
+  }
+  .lior-acc-list {
+    gap: 8px;
+  }
+  .lior-acc-category-header {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+  .lior-acc-category-header:active {
+    transform: scale(0.98);
+    transition: transform 0.08s ease;
+  }
+}
+@media (max-width: 480px) {
+  .lior-acc-panel {
+    font-size: 14px;
+  }
+  .lior-acc-panel-header h2 {
+    font-size: 17px !important;
+  }
+  .lior-acc-section-title {
+    font-size: 14px !important;
+  }
+  .lior-acc-toggle {
+    font-size: 13px !important;
+    padding: 12px 14px !important;
+  }
+  .lior-acc-toggle-description {
     font-size: 12px !important;
   }
 }
@@ -1024,6 +1111,21 @@
   justify-content: center;
   gap: 8px;
 }
+@media (max-width: 768px) {
+  .lior-acc-save-profile-btn {
+    position: sticky;
+    bottom: 0;
+    margin-top: 16px;
+    margin-bottom: 0;
+    z-index: 10;
+    background: var(--lior-acc-accent) !important;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+  }
+  .lior-acc-save-profile-btn:active {
+    transform: scale(0.98);
+    transition: transform 0.08s ease;
+  }
+}
 .lior-acc-save-icon {
   width: 18px;
   height: 18px;
@@ -1084,6 +1186,49 @@
   flex-direction: column;
   gap: 8px;
   animation: fadeInUp 0.5s ease 0.3s both;
+}
+@media (max-width: 768px) {
+  .lior-acc-profiles-list {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0 0 12px 0;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .lior-acc-profiles-list::-webkit-scrollbar {
+    display: none;
+  }
+  .lior-acc-profile-toggle {
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1.5px solid #E5E5EA;
+    font-size: 14px;
+    min-width: auto;
+    flex-shrink: 0;
+    margin-bottom: 0;
+    transition: all 0.2s ease;
+  }
+  .lior-acc-profile-toggle:active {
+    transform: scale(0.95);
+  }
+  .lior-acc-profile-toggle[aria-pressed="true"],
+  .lior-acc-profile-toggle.active {
+    background: var(--lior-acc-accent) !important;
+    color: #ffffff !important;
+    border-color: var(--lior-acc-accent);
+  }
+  .lior-acc-profile-icon {
+    display: none;
+  }
+  .lior-acc-profile-switch {
+    display: none;
+  }
+  .lior-acc-profile-delete {
+    display: none;
+  }
 }
 .lior-acc-profiles-list .lior-acc-profile-toggle {
   animation: fadeInScale 0.4s ease both;
@@ -1386,6 +1531,28 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+}
+@media (max-width: 768px) {
+  .lior-acc-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .lior-acc-modal-content {
+    width: 100%;
+    max-width: 100%;
+    height: 85vh;
+    max-height: 85vh;
+    border-radius: 24px 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .lior-acc-modal-body {
+    max-height: calc(85vh - 60px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+  }
 }
 .lior-acc-modal[hidden] {
   display: none !important;
@@ -1695,7 +1862,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1.48</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1.5</h2>
       <div style="display: flex; gap: 8px; align-items: center;">
         <button id="lior-acc-theme-toggle" class="lior-acc-theme-toggle" type="button" aria-label="החלף מצב כהה/בהיר" title="מצב כהה/בהיר">
           <span class="lior-acc-theme-icon">${icons.moon}</span>
@@ -2562,6 +2729,11 @@
     panel.hidden = false;
     panel.setAttribute('aria-hidden', 'false');
     panel.setAttribute('tabindex', '-1');
+    // Prevent body scroll on mobile
+    if (window.innerWidth <= 768) {
+      doc.body.style.overflow = 'hidden';
+    }
+    
     requestAnimationFrame(() => {
       panel.classList.add('show');
     });
@@ -2586,6 +2758,12 @@
     }
     if (panel) {
       panel.classList.remove('show');
+      
+      // Restore body scroll on mobile
+      if (window.innerWidth <= 768) {
+        doc.body.style.overflow = '';
+      }
+      
       const body = panel.querySelector('.lior-acc-panel-body');
       const header = panel.querySelector('.lior-acc-panel-header');
       if (body) body.style.animation = 'none';
@@ -3181,7 +3359,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1.48';
+    if (title) title.textContent = t('settings') + ' v0.1.5';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -3244,7 +3422,18 @@
         if (btn.dataset.action && !btn.dataset.toggle) {
           return;
         }
-        btn.addEventListener('click', () => handleToggle(name));
+        // Make entire row clickable on mobile
+        if (window.innerWidth <= 768) {
+          btn.addEventListener('click', (e) => {
+            // If clicked directly on switch, don't double-trigger
+            if (e.target.closest('.lior-acc-toggle-switch')) {
+              return;
+            }
+            handleToggle(name);
+          });
+        } else {
+          btn.addEventListener('click', () => handleToggle(name));
+        }
         btn.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
@@ -3390,7 +3579,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.1.48 loaded');
+      console.log('Lior Accessibility Widget v0.1.5 loaded');
     };
     
     // Start setup - will retry if elements are not ready
