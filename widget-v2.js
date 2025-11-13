@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.5.8)
+ * Lior Accessibility Widget v2.0 (v0.6.0)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -372,7 +372,7 @@
 }
 
 .lior-acc-button {
-  position: relative !important;
+  position: fixed !important;
   width: var(--lior-acc-size);
   height: var(--lior-acc-size);
   border-radius: 50%;
@@ -387,8 +387,7 @@
   padding: 0;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  bottom: auto !important;
-  top: auto !important;
+  bottom: 18px !important;
 }
 .lior-acc-button:hover {
   transform: scale(1.1);
@@ -859,7 +858,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.5.8';
+    content: ' v0.6.0';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -1154,6 +1153,20 @@
 .lior-acc-save-profile-btn:active {
   transform: translateY(0);
 }
+.lior-acc-save-profile-btn.disabled {
+  background: #E5E5EA !important;
+  color: #8E8E93 !important;
+  cursor: not-allowed;
+  box-shadow: none !important;
+}
+.lior-acc-save-profile-btn.disabled:hover {
+  transform: none;
+  box-shadow: none !important;
+  background: #E5E5EA !important;
+}
+.lior-acc-save-profile-btn.saving {
+  background: #10b981 !important;
+}
 .lior-acc-save-profile-btn {
   display: flex;
   align-items: center;
@@ -1175,8 +1188,13 @@
     box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
   }
   .lior-acc-save-profile-btn:active {
-    transform: scale(0.98);
-    transition: transform 0.08s ease;
+    transform: scale(0.97);
+    box-shadow: 0 1px 4px rgba(74, 144, 226, 0.5);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .lior-acc-save-profile-btn.disabled:active {
+    transform: none;
+    box-shadow: none;
   }
   .lior-acc-panel-body {
     padding-bottom: 80px; /* Space for sticky button */
@@ -2479,6 +2497,11 @@
     if (btn) {
       btn.setAttribute('aria-pressed', isOn ? 'true' : 'false');
     }
+    
+    // Update save button state after settings change
+    requestAnimationFrame(() => {
+      updateSaveButtonState();
+    });
   }
   
   function getCurrentSettingsSnapshot() {
@@ -3188,16 +3211,26 @@
       persistState();
       renderCustomProfiles();
       
-      // Animate save button
+      // Animate save button and show success state
       const saveBtn = byId('lior-acc-save-profile');
+      const saveText = saveBtn?.querySelector('.lior-acc-save-text');
       const saveIcon = saveBtn?.querySelector('.lior-acc-save-icon');
       if (saveBtn) {
-        saveBtn.classList.add('saved');
-        if (saveIcon) saveIcon.classList.add('saved');
-        setTimeout(() => {
-          saveBtn.classList.remove('saved');
-          if (saveIcon) saveIcon.classList.remove('saved');
-        }, 600);
+        saveBtn.classList.add('saving');
+        if (saveText) {
+          const originalText = saveText.textContent;
+          saveText.textContent = 'נשמר ✓';
+          setTimeout(() => {
+            saveBtn.classList.remove('saving');
+            updateSaveButtonState();
+          }, 2000);
+        }
+        if (saveIcon) {
+          saveIcon.classList.add('saved');
+          setTimeout(() => {
+            saveIcon.classList.remove('saved');
+          }, 600);
+        }
       }
       
       showToast('פרופיל נשמר בהצלחה: ' + name);
@@ -3221,16 +3254,25 @@
       renderCustomProfiles();
       updateActiveProfileIndicator();
       
-      // Animate save button
+      // Animate save button and show success state
       const saveBtn = byId('lior-acc-save-profile');
+      const saveText = saveBtn?.querySelector('.lior-acc-save-text');
       const saveIcon = saveBtn?.querySelector('.lior-acc-save-icon');
       if (saveBtn) {
-        saveBtn.classList.add('saved');
-        if (saveIcon) saveIcon.classList.add('saved');
-        setTimeout(() => {
-          saveBtn.classList.remove('saved');
-          if (saveIcon) saveIcon.classList.remove('saved');
-        }, 600);
+        saveBtn.classList.add('saving');
+        if (saveText) {
+          saveText.textContent = 'נשמר ✓';
+          setTimeout(() => {
+            saveBtn.classList.remove('saving');
+            updateSaveButtonState();
+          }, 2000);
+        }
+        if (saveIcon) {
+          saveIcon.classList.add('saved');
+          setTimeout(() => {
+            saveIcon.classList.remove('saved');
+          }, 600);
+        }
       }
       
       showToast('פרופיל עודכן: ' + profile.name);
@@ -3432,6 +3474,50 @@
         indicator.textContent = '';
         indicator.style.display = 'none';
       }
+    }
+    
+    // Update save button state
+    updateSaveButtonState();
+  }
+  
+  function updateSaveButtonState() {
+    const saveBtn = byId('lior-acc-save-profile');
+    const saveText = saveBtn?.querySelector('.lior-acc-save-text');
+    if (!saveBtn || !saveText) return;
+    
+    const currentSettings = getCurrentSettingsSnapshot();
+    const hasActiveSettings = Object.values(currentSettings).some(val => val === true || (typeof val === 'number' && val > 0));
+    
+    // Check if current settings match active profile
+    if (accessibilityState.activeProfileId) {
+      const activeProfile = accessibilityState.profiles.find(p => p.id === accessibilityState.activeProfileId);
+      if (activeProfile) {
+        const settingsMatch = JSON.stringify(activeProfile.settings) === JSON.stringify(currentSettings);
+        if (settingsMatch) {
+          // Settings match - disable button
+          saveBtn.classList.add('disabled');
+          saveBtn.disabled = true;
+          saveText.textContent = 'פרופיל שמור';
+          return;
+        } else {
+          // Settings changed - enable update button
+          saveBtn.classList.remove('disabled');
+          saveBtn.disabled = false;
+          saveText.textContent = 'עדכן פרופיל';
+          return;
+        }
+      }
+    }
+    
+    // No active profile or no match
+    if (!hasActiveSettings) {
+      saveBtn.classList.add('disabled');
+      saveBtn.disabled = true;
+      saveText.textContent = 'שמור פרופיל מותאם';
+    } else {
+      saveBtn.classList.remove('disabled');
+      saveBtn.disabled = false;
+      saveText.textContent = 'שמור פרופיל מותאם';
     }
   }
 
@@ -3753,7 +3839,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.5.8 loaded');
+      console.log('Lior Accessibility Widget v0.6.0 loaded');
     };
     
     // Start setup - will retry if elements are not ready
