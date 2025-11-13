@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.6.1)
+ * Lior Accessibility Widget v2.0 (v0.6.2)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -506,7 +506,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.6.1';
+  content: ' v0.6.2';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -865,7 +865,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.6.1';
+    content: ' v0.6.2';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -1959,7 +1959,8 @@
     pause: '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
     delete: '<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
     accessibility: '<svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="M19 10v-2a2 2 0 0 0-2-2h-1M5 10V8a2 2 0 0 1 2-2h1m0 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M7 20h10"/><path d="M12 20v-8"/><path d="M8 12l4-4 4 4"/></svg>',
-    check: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+    check: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+    keyboard: '<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="6" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="6" y1="16" x2="16" y2="16"/></svg>'
   };
 
   // ============================================
@@ -2192,6 +2193,49 @@
         <span>הצהרת נגישות</span>
         <span class="lior-acc-link-icon">${icons.fileText}</span>
       </button>
+      <button id="lior-acc-keyboard-shortcuts" class="lior-acc-link" type="button">
+        <span>קיצורי מקלדת לתפריט נגישות</span>
+        <span class="lior-acc-link-icon">${icons.keyboard}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Keyboard Shortcuts Modal -->
+<div id="lior-acc-keyboard-shortcuts-modal" class="lior-acc-modal" role="dialog" aria-modal="true" aria-labelledby="lior-acc-keyboard-shortcuts-title" hidden>
+  <div class="lior-acc-modal-overlay"></div>
+  <div class="lior-acc-modal-content">
+    <div class="lior-acc-modal-header">
+      <h2 id="lior-acc-keyboard-shortcuts-title">קיצורי מקלדת לתפריט נגישות</h2>
+      <button id="lior-acc-keyboard-shortcuts-close" class="lior-acc-modal-close" type="button" aria-label="סגור">×</button>
+    </div>
+    <div class="lior-acc-modal-body">
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+          <span><strong>Alt + A</strong></span>
+          <span>פתיחה/סגירה של תפריט הנגישות</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+          <span><strong>Alt + Shift + 1</strong></span>
+          <span>פרופיל כבדי ראייה</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+          <span><strong>Alt + Shift + 2</strong></span>
+          <span>פרופיל לקויות למידה</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+          <span><strong>Alt + Shift + 3</strong></span>
+          <span>פרופיל רגישות לאפילפסיה</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+          <span><strong>Alt + Shift + 4</strong></span>
+          <span>פרופיל קשב וריכוז</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+          <span><strong>Alt + Shift + 5</strong></span>
+          <span>פרופיל דיסלקציה</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -2380,6 +2424,10 @@
     const modal = container.querySelector('#lior-acc-declaration-modal');
     if (modal) {
       doc.body.appendChild(modal);
+    }
+    const keyboardModal = container.querySelector('#lior-acc-keyboard-shortcuts-modal');
+    if (keyboardModal) {
+      doc.body.appendChild(keyboardModal);
     }
   }
 
@@ -2990,12 +3038,43 @@
 
   function handleDocumentKeydown(event) {
     const key = typeof event.key === 'string' ? event.key : '';
+    
+    // === קיצורי מקלדת גלובליים לפרופילים ===
+    if (event.altKey && event.shiftKey) {
+      switch (key) {
+        case '1':
+          event.preventDefault();
+          enableProfile('vision');
+          return;
+        case '2':
+          event.preventDefault();
+          enableProfile('learning');
+          return;
+        case '3':
+          event.preventDefault();
+          enableProfile('epilepsy');
+          return;
+        case '4':
+          event.preventDefault();
+          enableProfile('adhd');
+          return;
+        case '5':
+          event.preventDefault();
+          enableProfile('dyslexia');
+          return;
+      }
+    }
+    
+    // קיצור לפתיחת/סגירת תפריט הנגישות
     if (event.altKey && key.toLowerCase() === 'a') {
       event.preventDefault();
       state.open ? closePanel() : openPanel();
       return;
     }
+    
+    // מכאן והלאה – קיצורי מקלדת שפועלים *רק כשפאנל פתוח*
     if (!state.open) return;
+    
     if (key === 'Escape') {
       event.preventDefault();
       closePanel();
@@ -3605,6 +3684,35 @@
     }
   }
 
+  function openKeyboardShortcuts() {
+    const modal = byId('lior-acc-keyboard-shortcuts-modal');
+    if (modal) {
+      closePanel();
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => {
+        modal.classList.add('show');
+      });
+      const closeBtn = byId('lior-acc-keyboard-shortcuts-close');
+      if (closeBtn) {
+        setTimeout(() => closeBtn.focus(), 200);
+      }
+      doc.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeKeyboardShortcuts() {
+    const modal = byId('lior-acc-keyboard-shortcuts-modal');
+    if (modal) {
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
+        doc.body.style.overflow = '';
+      }, 300);
+    }
+  }
+
   function closeAccessibilityDeclaration() {
     const modal = byId('lior-acc-declaration-modal');
     if (modal) {
@@ -3851,6 +3959,14 @@
         });
       }
 
+      const keyboardShortcutsBtn = byId('lior-acc-keyboard-shortcuts');
+      if (keyboardShortcutsBtn) {
+        keyboardShortcutsBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openKeyboardShortcuts();
+        });
+      }
+
       const accModalClose = byId('lior-acc-declaration-close');
       const accModal = byId('lior-acc-declaration-modal');
       if (accModalClose) {
@@ -3868,9 +3984,26 @@
         });
       }
 
+      const keyboardModalClose = byId('lior-acc-keyboard-shortcuts-close');
+      const keyboardModal = byId('lior-acc-keyboard-shortcuts-modal');
+      if (keyboardModalClose) {
+        keyboardModalClose.addEventListener('click', closeKeyboardShortcuts);
+      }
+      if (keyboardModal) {
+        const modalOverlay = keyboardModal.querySelector('.lior-acc-modal-overlay');
+        if (modalOverlay) {
+          modalOverlay.addEventListener('click', closeKeyboardShortcuts);
+        }
+        keyboardModal.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            closeKeyboardShortcuts();
+          }
+        });
+      }
+
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.6.1 loaded');
+      console.log('Lior Accessibility Widget v0.6.2 loaded');
     };
     
     // Start setup - will retry if elements are not ready
