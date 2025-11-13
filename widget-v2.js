@@ -2998,6 +2998,12 @@
     const button = byId('lior-acc-button');
     const panel = byId('lior-acc-panel');
     const overlay = byId('lior-acc-overlay');
+    const root = byId('lior-acc-root');
+    
+    // Check if user prefers reduced motion
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const closeDelay = prefersReduced ? 0 : 400;
+    
     state.open = false;
     if (button) {
       button.setAttribute('aria-expanded', 'false');
@@ -3018,7 +3024,8 @@
       const header = panel.querySelector('.lior-acc-panel-header');
       if (body) body.style.animation = 'none';
       if (header) header.style.animation = 'none';
-      setTimeout(() => {
+      
+      const doClose = () => {
         panel.hidden = true;
         panel.setAttribute('aria-hidden', 'true');
         if (body) body.style.animation = '';
@@ -3026,11 +3033,22 @@
         // Ensure transform is reset after close
         panel.style.transform = '';
         panel.style.opacity = '';
-      }, 400);
+      };
+      
+      if (prefersReduced) {
+        // Close immediately if reduced motion
+        doClose();
+      } else {
+        // Wait for animation if motion is allowed
+        setTimeout(doClose, closeDelay);
+      }
     }
     if (overlay) {
       overlay.hidden = true;
       overlay.setAttribute('aria-hidden', 'true');
+    }
+    if (root) {
+      root.classList.remove('lior-acc-open');
     }
     setOutsideInert(false);
     if (state.lastFocused && typeof state.lastFocused.focus === 'function') {
@@ -3149,7 +3167,7 @@
     
     // If already active, deactivate all profile settings
     if (isActive) {
-      settings.forEach(name => {
+    settings.forEach(name => {
         applyToggle(name, false);
         persistToggle(name, false);
       });
@@ -3826,7 +3844,7 @@
             handleToggle(name);
           });
         } else {
-          btn.addEventListener('click', () => handleToggle(name));
+        btn.addEventListener('click', () => handleToggle(name));
         }
         btn.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {
@@ -3876,7 +3894,7 @@
       if (!accessibilityState.currentSettings || Object.keys(accessibilityState.currentSettings).length === 0) {
         accessibilityState.currentSettings = getCurrentSettingsSnapshot();
         // Try to restore from legacy storage
-        restoreToggles();
+      restoreToggles();
       }
       
       updateProfileStates();
