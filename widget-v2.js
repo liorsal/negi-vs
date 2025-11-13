@@ -3000,8 +3000,8 @@
       const threshold = 100; // Minimum swipe distance to close
       
       if (deltaY > threshold) {
-        // Close panel - reset styles will be handled in closePanel
-        closePanel();
+        // Close panel with animation
+        closePanelWithAnimation();
       } else {
         // Snap back with smooth transition
         panel.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
