@@ -3743,6 +3743,9 @@
       updateProfileStates();
       renderCustomProfiles();
       updateActiveProfileIndicator();
+      
+      // Initialize save button state
+      updateSaveButtonState();
 
       const saveProfileBtn = byId('lior-acc-save-profile');
       if (saveProfileBtn) {
