@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.1.4)
+ * Lior Accessibility Widget v2.0 (v0.1.45)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -1563,7 +1563,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1.4</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1.45</h2>
       <div style="display: flex; gap: 8px; align-items: center;">
         <button id="lior-acc-theme-toggle" class="lior-acc-theme-toggle" type="button" aria-label="החלף מצב כהה/בהיר" title="מצב כהה/בהיר">
           <span class="lior-acc-theme-icon">🌙</span>
@@ -2000,9 +2000,11 @@
     lastChangeTime: null
   };
 
-  const GLOBAL_STORAGE_KEY = 'liorAccGlobalSettings';
-  const CUSTOM_PROFILES_KEY = 'liorAccCustomProfiles';
-  const storageKey = (name) => `acc-${name}`;
+  // Unified storage key - single source of truth
+  const STORAGE_KEY = 'lior_accessibility_state_v1';
+  const GLOBAL_STORAGE_KEY = 'liorAccGlobalSettings'; // Legacy support
+  const CUSTOM_PROFILES_KEY = 'liorAccCustomProfiles'; // Legacy support
+  const storageKey = (name) => `acc-${name}`; // Legacy support
 
   const getFocusable = (container) =>
     Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR)).filter((el) => {
@@ -2047,29 +2049,35 @@
     });
   }
 
-  function applyToggle(name, isOn) {
+  function applyToggle(name, isOn, skipProfileReset = false) {
     const className = `acc-${name}`;
     root.classList.toggle(className, !!isOn);
     toggleState.set(name, !!isOn);
     // Update global state
     accessibilityState.currentSettings[name] = !!isOn;
-    accessibilityState.settingsChangeCount++;
-    accessibilityState.lastChangeTime = Date.now();
     
-    // If settings changed manually, clear active profile
-    if (accessibilityState.activeProfileId) {
-      accessibilityState.activeProfileId = null;
-      updateActiveProfileIndicator();
-      renderCustomProfiles();
+    if (!skipProfileReset) {
+      accessibilityState.settingsChangeCount++;
+      accessibilityState.lastChangeTime = Date.now();
+      
+      // If settings changed manually, clear active profile
+      if (accessibilityState.activeProfileId) {
+        accessibilityState.activeProfileId = null;
+        updateActiveProfileIndicator();
+        renderCustomProfiles();
+      }
+      
+      // Persist state after change
+      persistState();
+      
+      // Check if we should suggest saving profile
+      checkAutoSaveSuggestion();
     }
     
     const btn = toggleButtons.get(name);
     if (btn) {
       btn.setAttribute('aria-pressed', isOn ? 'true' : 'false');
     }
-    
-    // Check if we should suggest saving profile
-    checkAutoSaveSuggestion();
   }
   
   function getCurrentSettingsSnapshot() {
@@ -2118,15 +2126,7 @@
           }
         }
       } else if (TOGGLES.includes(name)) {
-        const className = `acc-${name}`;
-        const isOn = settings[name];
-        root.classList.toggle(className, !!isOn);
-        toggleState.set(name, !!isOn);
-        accessibilityState.currentSettings[name] = !!isOn;
-        const btn = toggleButtons.get(name);
-        if (btn) {
-          btn.setAttribute('aria-pressed', isOn ? 'true' : 'false');
-        }
+        applyToggle(name, settings[name], skipProfileReset);
       }
     });
     
@@ -2152,11 +2152,18 @@
 
   function saveGlobalSettings() {
     try {
+      // Update current settings in state
+      accessibilityState.currentSettings = getCurrentSettingsSnapshot();
+      
+      // Save legacy format for backward compatibility
       const settings = {};
       TOGGLES.forEach((name) => {
         settings[name] = toggleState.get(name) || false;
       });
       localStorage.setItem(GLOBAL_STORAGE_KEY, JSON.stringify(settings));
+      
+      // Save unified state
+      persistState();
     } catch (err) {
       console.warn('Lior Accessibility: unable to save global settings', err);
     }
@@ -2532,10 +2539,46 @@
     const settings = profileSettings[profile];
     if (!settings) return;
     const isActive = settings.every(name => toggleState.get(name));
-    settings.forEach(name => {
-      applyToggle(name, !isActive);
-      persistToggle(name, !isActive);
-    });
+    
+    // If already active, deactivate all profile settings
+    if (isActive) {
+      settings.forEach(name => {
+        applyToggle(name, false);
+        persistToggle(name, false);
+      });
+      // Clear any active custom profile
+      if (accessibilityState.activeProfileId) {
+        accessibilityState.activeProfileId = null;
+        updateActiveProfileIndicator();
+        renderCustomProfiles();
+      }
+    } else {
+      // Deactivate other built-in profiles first
+      Object.keys(profileSettings).forEach(otherProfile => {
+        if (otherProfile !== profile) {
+          const otherSettings = profileSettings[otherProfile];
+          const otherIsActive = otherSettings.every(name => toggleState.get(name));
+          if (otherIsActive) {
+            otherSettings.forEach(name => {
+              applyToggle(name, false);
+              persistToggle(name, false);
+            });
+          }
+        }
+      });
+      // Clear any active custom profile
+      if (accessibilityState.activeProfileId) {
+        accessibilityState.activeProfileId = null;
+        updateActiveProfileIndicator();
+        renderCustomProfiles();
+      }
+      // Activate this profile
+      settings.forEach(name => {
+        applyToggle(name, true);
+        persistToggle(name, true);
+      });
+    }
+    
     const profileNames = {
       'vision': 'ראייה',
       'learning': 'לקויות למידה מורכבות',
@@ -2560,12 +2603,67 @@
     }
   }
 
-  function loadProfilesFromStorage() {
+  function loadStateFromStorage() {
     try {
-      const saved = localStorage.getItem(CUSTOM_PROFILES_KEY);
-      if (saved) {
-        const profilesData = JSON.parse(saved);
-        // Convert old format to new format if needed
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        // Try to migrate from old format
+        migrateFromOldStorage();
+        return;
+      }
+
+      const saved = JSON.parse(raw);
+
+      // Basic validation
+      if (!saved || typeof saved !== 'object') {
+        migrateFromOldStorage();
+        return;
+      }
+
+      // Load profiles
+      if (Array.isArray(saved.profiles)) {
+        accessibilityState.profiles = saved.profiles;
+      }
+
+      // Load active profile
+      if (saved.activeProfileId) {
+        accessibilityState.activeProfileId = saved.activeProfileId;
+      }
+
+      // Load current settings if exists
+      if (saved.currentSettings && typeof saved.currentSettings === 'object') {
+        accessibilityState.currentSettings = saved.currentSettings;
+      }
+
+      // Apply settings to DOM if we have active profile
+      if (accessibilityState.activeProfileId) {
+        const profile = accessibilityState.profiles.find(p => p.id === accessibilityState.activeProfileId);
+        if (profile && profile.settings) {
+          applySettingsToDOM(profile.settings, true);
+          // Show notification only if profile was actually loaded
+          setTimeout(() => {
+            showToast('טענו את הפרופיל האחרון שלך ✓');
+          }, 800);
+        }
+      } else if (saved.currentSettings && Object.keys(saved.currentSettings).length > 0) {
+        // Apply saved settings even without active profile (user had custom settings)
+        const hasActiveSettings = Object.values(saved.currentSettings).some(val => val === true || (typeof val === 'number' && val > 0));
+        if (hasActiveSettings) {
+          applySettingsToDOM(saved.currentSettings, true);
+        }
+      }
+    } catch (err) {
+      console.warn('Lior Accessibility: unable to load state from storage', err);
+      migrateFromOldStorage();
+    }
+  }
+
+  function migrateFromOldStorage() {
+    // Try to load from old format and migrate
+    try {
+      const oldProfiles = localStorage.getItem(CUSTOM_PROFILES_KEY);
+      if (oldProfiles) {
+        const profilesData = JSON.parse(oldProfiles);
         if (Array.isArray(profilesData)) {
           accessibilityState.profiles = profilesData;
         } else if (typeof profilesData === 'object') {
@@ -2578,18 +2676,25 @@
             domain: null
           }));
         }
+        // Save in new format
+        persistState();
       }
     } catch (err) {
-      console.warn('Lior Accessibility: unable to load profiles', err);
-      accessibilityState.profiles = [];
+      console.warn('Lior Accessibility: unable to migrate from old storage', err);
     }
   }
 
-  function saveProfilesToStorage() {
+  function persistState() {
     try {
-      localStorage.setItem(CUSTOM_PROFILES_KEY, JSON.stringify(accessibilityState.profiles));
+      const stateToSave = {
+        currentSettings: accessibilityState.currentSettings,
+        activeProfileId: accessibilityState.activeProfileId,
+        profiles: accessibilityState.profiles,
+        lastSaved: Date.now()
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
     } catch (err) {
-      console.warn('Lior Accessibility: unable to save profiles', err);
+      console.warn('Lior Accessibility: unable to save state to storage', err);
     }
   }
 
@@ -2605,7 +2710,8 @@
 
       accessibilityState.profiles.push(profile);
       accessibilityState.activeProfileId = profile.id;
-      saveProfilesToStorage();
+      accessibilityState.currentSettings = { ...settings };
+      persistState();
       renderCustomProfiles();
       
       // Animate save button
@@ -2634,7 +2740,7 @@
       profile.settings = { ...settings };
       profile.updatedAt = Date.now();
       accessibilityState.currentSettings = { ...settings };
-      saveProfilesToStorage();
+      persistState();
       renderCustomProfiles();
       updateActiveProfileIndicator();
       
@@ -2646,10 +2752,62 @@
     }
   }
 
+  function deactivateProfile() {
+    // Reset all settings
+    const emptySettings = {};
+    TOGGLES.forEach((name) => {
+      emptySettings[name] = false;
+    });
+    
+    applySettingsToDOM(emptySettings, true);
+    
+    // Clear active profile
+    accessibilityState.activeProfileId = null;
+    accessibilityState.currentSettings = {};
+    accessibilityState.settingsChangeCount = 0;
+    
+    // Clear localStorage (legacy)
+    TOGGLES.forEach((name) => {
+      localStorage.removeItem(storageKey(name));
+    });
+    localStorage.removeItem(storageKey('inc-text-level'));
+    localStorage.removeItem(GLOBAL_STORAGE_KEY);
+    
+    persistState(); // Save unified state
+    updateProfileStates();
+    renderCustomProfiles();
+    updateActiveProfileIndicator();
+    showToast('פרופיל כובה');
+  }
+
   function loadCustomProfile(profileId) {
     try {
       const profile = accessibilityState.profiles.find(p => p.id === profileId);
       if (!profile || !profile.settings) return false;
+      
+      // Deactivate all built-in profiles first
+      const profileSettings = {
+        'vision': ['high-contrast', 'inc-text', 'highlight-links'],
+        'learning': ['dyslexia', 'spacing', 'reading-focus', 'big-cursor'],
+        'epilepsy': ['no-anim', 'grayscale'],
+        'adhd': ['no-anim', 'reading-focus', 'big-cursor'],
+        'dyslexia': ['dyslexia', 'spacing', 'no-anim']
+      };
+      
+      Object.keys(profileSettings).forEach(builtInProfile => {
+        const builtInSettings = profileSettings[builtInProfile];
+        const isActive = builtInSettings.every(name => toggleState.get(name));
+        if (isActive) {
+          builtInSettings.forEach(name => {
+            applyToggle(name, false, true); // Skip profile reset
+            persistToggle(name, false);
+          });
+          const profileBtn = doc.querySelector(`[data-profile="${builtInProfile}"]`);
+          if (profileBtn) {
+            profileBtn.setAttribute('aria-pressed', 'false');
+          }
+        }
+      });
       
       // Apply settings to DOM (skip profile reset to keep activeProfileId)
       applySettingsToDOM(profile.settings, true);
@@ -2659,7 +2817,7 @@
       accessibilityState.activeProfileId = profileId;
       accessibilityState.settingsChangeCount = 0;
       
-      // Persist to localStorage
+      // Persist to localStorage (legacy support)
       Object.keys(profile.settings).forEach((name) => {
         if (name === 'inc-text-level') {
           localStorage.setItem(storageKey('inc-text-level'), profile.settings[name].toString());
@@ -2672,6 +2830,7 @@
       });
       
       saveGlobalSettings();
+      persistState(); // Save unified state
       updateProfileStates();
       renderCustomProfiles();
       updateActiveProfileIndicator();
@@ -2694,9 +2853,10 @@
       
       if (accessibilityState.activeProfileId === profileId) {
         accessibilityState.activeProfileId = null;
+        accessibilityState.currentSettings = {};
       }
       
-      saveProfilesToStorage();
+      persistState();
       renderCustomProfiles();
       updateActiveProfileIndicator();
       showToast('פרופיל נמחק: ' + profile.name);
@@ -2812,7 +2972,13 @@
       profileBtn.appendChild(deleteBtn);
       
       profileBtn.addEventListener('click', () => {
-        loadCustomProfile(profile.id);
+        if (isActive) {
+          // If profile is already active, deactivate it
+          deactivateProfile();
+        } else {
+          // Load the profile
+          loadCustomProfile(profile.id);
+        }
       });
       
       container.appendChild(profileBtn);
@@ -2924,7 +3090,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1.4';
+    if (title) title.textContent = t('settings') + ' v0.1.45';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -3024,11 +3190,16 @@
         });
       });
 
-      // Initialize state
-      loadProfilesFromStorage();
-      accessibilityState.currentSettings = getCurrentSettingsSnapshot();
+      // Initialize state - load from unified storage
+      loadStateFromStorage();
       
-      restoreToggles();
+      // If no state was loaded, initialize with current settings
+      if (!accessibilityState.currentSettings || Object.keys(accessibilityState.currentSettings).length === 0) {
+        accessibilityState.currentSettings = getCurrentSettingsSnapshot();
+        // Try to restore from legacy storage
+        restoreToggles();
+      }
+      
       updateProfileStates();
       renderCustomProfiles();
       updateActiveProfileIndicator();
@@ -3128,7 +3299,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.1.4 loaded');
+      console.log('Lior Accessibility Widget v0.1.45 loaded');
     };
     
     // Start setup - will retry if elements are not ready
