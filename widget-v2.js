@@ -1158,10 +1158,13 @@
   gap: 8px;
 }
 @media (max-width: 768px) {
+  .lior-acc-profiles-section {
+    margin-bottom: 20px;
+  }
   .lior-acc-save-profile-btn {
     position: sticky;
     bottom: 0;
-    margin-top: 16px;
+    margin-top: 20px;
     margin-bottom: 0;
     padding-bottom: env(safe-area-inset-bottom, 0);
     z-index: 10;
@@ -1271,13 +1274,28 @@
     justify-content: center;
   }
   .lior-acc-profiles-list .lior-acc-profile-toggle:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
+    transition: transform 0.1s ease;
   }
   .lior-acc-profiles-list .lior-acc-profile-toggle[aria-pressed="true"],
   .lior-acc-profiles-list .lior-acc-profile-toggle.active {
-    background: var(--lior-acc-accent) !important;
+    background: #0a7cff !important;
     color: #ffffff !important;
-    border-color: var(--lior-acc-accent);
+    border-color: #0a7cff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(10, 124, 255, 0.3);
+  }
+  .lior-acc-profiles-list .lior-acc-profile-toggle.active::after {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-inline-start: 6px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20 6 9 17 4 12' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
   }
   .lior-acc-profiles-list .lior-acc-profile-icon {
     display: none;
@@ -1912,7 +1930,8 @@
     volume: '<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
     pause: '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
     delete: '<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
-    accessibility: '<svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="M19 10v-2a2 2 0 0 0-2-2h-1M5 10V8a2 2 0 0 1 2-2h1m0 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M7 20h10"/><path d="M12 20v-8"/><path d="M8 12l4-4 4 4"/></svg>'
+    accessibility: '<svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="M19 10v-2a2 2 0 0 0-2-2h-1M5 10V8a2 2 0 0 1 2-2h1m0 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M7 20h10"/><path d="M12 20v-8"/><path d="M8 12l4-4 4 4"/></svg>',
+    check: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
   };
 
   // ============================================
