@@ -505,6 +505,13 @@
   color: #000000 !important; 
   line-height: 1.3;
 }
+.lior-acc-panel-header h2::after {
+  content: ' v0.6.1';
+  font-size: 12px;
+  font-weight: 400;
+  color: #999;
+  margin-inline-start: 4px;
+}
 .lior-acc-close {
     border: 0;
     background: transparent;
