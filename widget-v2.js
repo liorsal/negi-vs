@@ -844,6 +844,13 @@
     height: 4px;
     background: #ddd;
     border-radius: 2px;
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+    transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s;
+  }
+  .lior-acc-panel.show .lior-acc-panel-header::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
   .lior-acc-panel-header h2 {
     margin-top: 10px;
@@ -1112,6 +1119,35 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
 }
+.lior-acc-save-profile-btn.saved {
+  background: #10b981 !important;
+  animation: saveSuccess 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes saveSuccess {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.lior-acc-save-icon.saved {
+  animation: iconRotate 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes iconRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .lior-acc-save-profile-btn:active {
   transform: translateY(0);
 }
@@ -1182,6 +1218,8 @@
 .lior-acc-profile-toggle.active {
   box-shadow: 0 0 0 2px var(--lior-acc-accent) !important;
   background: rgba(74, 144, 226, 0.05) !important;
+  transform: translateY(-1px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .lior-acc-section-title {
   font-size: 17px;
@@ -1298,6 +1336,8 @@
 .lior-acc-profile-toggle[aria-pressed="true"] {
   background: #ffffff !important;
   box-shadow: 0 0 0 2px var(--lior-acc-accent);
+  transform: translateY(-1px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .lior-acc-profile-icon {
   width: 18px;
@@ -1454,6 +1494,9 @@
   max-height: 0;
   padding-top: 0;
   padding-bottom: 0;
+}
+.lior-acc-category-content--opening {
+  animation: slideDown 0.18s ease-out;
 }
 @keyframes slideDown {
   from {
@@ -3125,11 +3168,14 @@
       
       // Animate save button
       const saveBtn = byId('lior-acc-save-profile');
+      const saveIcon = saveBtn?.querySelector('.lior-acc-save-icon');
       if (saveBtn) {
-        saveBtn.style.transform = 'rotate(180deg) scale(1.1)';
+        saveBtn.classList.add('saved');
+        if (saveIcon) saveIcon.classList.add('saved');
         setTimeout(() => {
-          saveBtn.style.transform = '';
-        }, 300);
+          saveBtn.classList.remove('saved');
+          if (saveIcon) saveIcon.classList.remove('saved');
+        }, 600);
       }
       
       showToast('פרופיל נשמר בהצלחה: ' + name);
@@ -3152,6 +3198,18 @@
       persistState();
       renderCustomProfiles();
       updateActiveProfileIndicator();
+      
+      // Animate save button
+      const saveBtn = byId('lior-acc-save-profile');
+      const saveIcon = saveBtn?.querySelector('.lior-acc-save-icon');
+      if (saveBtn) {
+        saveBtn.classList.add('saved');
+        if (saveIcon) saveIcon.classList.add('saved');
+        setTimeout(() => {
+          saveBtn.classList.remove('saved');
+          if (saveIcon) saveIcon.classList.remove('saved');
+        }, 600);
+      }
       
       showToast('פרופיל עודכן: ' + profile.name);
       return true;
@@ -3555,6 +3613,11 @@
             content.hidden = true;
           } else {
             content.hidden = false;
+            // Add opening animation
+            content.classList.add('lior-acc-category-content--opening');
+            setTimeout(() => {
+              content.classList.remove('lior-acc-category-content--opening');
+            }, 180);
           }
         });
       });
