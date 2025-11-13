@@ -1635,6 +1635,9 @@
     background: #e6f1ff !important;
   }
 }
+#lior-acc-keyboard-shortcuts {
+  margin-top: 8px;
+}
 
 .lior-acc-modal {
   position: fixed;
