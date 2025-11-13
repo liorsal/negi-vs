@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.1.47)
+ * Lior Accessibility Widget v2.0 (v0.1.48)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -758,14 +758,13 @@
   margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  justify-content: flex-end;
   text-align: right;
   direction: rtl;
 }
-.lior-acc-reset > span:last-child {
+.lior-acc-reset > span:first-child {
   text-align: right;
   flex: 1;
+  margin-inline-end: auto;
 }
 .lior-acc-reset-icon {
   width: 18px;
@@ -774,6 +773,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-inline-start: 10px;
 }
 .lior-acc-reset-icon svg {
   width: 18px;
@@ -1315,8 +1315,6 @@
 .lior-acc-link {
   display: flex;
   align-items: center;
-  gap: 10px;
-  justify-content: flex-end;
   width: 100%;
   text-align: right;
   padding: 14px 18px;
@@ -1334,9 +1332,10 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   direction: rtl;
 }
-.lior-acc-link > span:last-child {
+.lior-acc-link > span:first-child {
   text-align: right;
   flex: 1;
+  margin-inline-end: auto;
 }
 .lior-acc-link-icon {
   width: 18px;
@@ -1345,6 +1344,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-inline-start: 10px;
 }
 .lior-acc-link-icon svg {
   width: 18px;
@@ -1695,7 +1695,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1.47</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1.48</h2>
       <div style="display: flex; gap: 8px; align-items: center;">
         <button id="lior-acc-theme-toggle" class="lior-acc-theme-toggle" type="button" aria-label="החלף מצב כהה/בהיר" title="מצב כהה/בהיר">
           <span class="lior-acc-theme-icon">${icons.moon}</span>
@@ -1904,12 +1904,12 @@
       </div>
       
       <button id="lior-acc-reset" class="lior-acc-reset" type="button">
-        <span class="lior-acc-reset-icon">${icons.rotateCcw}</span>
         <span>איפוס הגדרות</span>
+        <span class="lior-acc-reset-icon">${icons.rotateCcw}</span>
       </button>
       <button id="lior-acc-declaration" class="lior-acc-link" type="button">
-        <span class="lior-acc-link-icon">${icons.fileText}</span>
         <span>הצהרת נגישות</span>
+        <span class="lior-acc-link-icon">${icons.fileText}</span>
       </button>
     </div>
   </div>
@@ -3181,7 +3181,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1.47';
+    if (title) title.textContent = t('settings') + ' v0.1.48';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -3390,7 +3390,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.1.47 loaded');
+      console.log('Lior Accessibility Widget v0.1.48 loaded');
     };
     
     // Start setup - will retry if elements are not ready
