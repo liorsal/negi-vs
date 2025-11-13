@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.1.45)
+ * Lior Accessibility Widget v2.0 (v0.1.46)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -545,6 +545,22 @@
   transition: all 0.2s ease;
   border-radius: 50%;
 }
+.lior-acc-theme-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.lior-acc-theme-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .lior-acc-theme-toggle:hover {
   background: rgba(0, 0, 0, 0.1);
   transform: scale(1.1);
@@ -665,9 +681,21 @@
 }
 .lior-acc-icon {
   margin-inline-end: 10px;
-  font-size: 1.2em;
-  display: inline-block;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+}
+.lior-acc-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .lior-acc-toggle-switch {
   width: 44px;
@@ -728,6 +756,27 @@
   animation: fadeInUp 0.5s ease 0.65s both;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.lior-acc-reset-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.lior-acc-reset-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .lior-acc-reset:hover {
   transform: translateY(-2px);
@@ -963,9 +1012,29 @@
 .lior-acc-save-profile-btn:active {
   transform: translateY(0);
 }
-.lior-acc-save-profile-btn .lior-acc-save-icon {
-  display: inline-block;
+.lior-acc-save-profile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.lior-acc-save-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lior-acc-save-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .lior-acc-save-profile-btn:hover .lior-acc-save-icon {
   transform: scale(1.1);
@@ -991,69 +1060,6 @@
 .lior-acc-profile-toggle.active {
   box-shadow: 0 0 0 2px var(--lior-acc-accent) !important;
   background: rgba(74, 144, 226, 0.05) !important;
-}
-.lior-acc-auto-save-suggestion {
-  position: fixed;
-  bottom: 120px;
-  right: 18px;
-  z-index: calc(var(--lior-acc-z) + 5);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-.lior-acc-auto-save-suggestion.show {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-.lior-acc-suggestion-content {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  max-width: 320px;
-  border: 1px solid var(--lior-acc-border);
-}
-.lior-acc-suggestion-content span {
-  display: block;
-  font-size: 14px;
-  color: #000;
-  margin-bottom: 12px;
-  line-height: 1.5;
-  text-align: right;
-}
-.lior-acc-suggestion-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-.lior-acc-suggestion-btn {
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.lior-acc-suggestion-yes {
-  background: var(--lior-acc-accent);
-  color: #fff;
-}
-.lior-acc-suggestion-yes:hover {
-  background: var(--lior-acc-accent-hover);
-}
-.lior-acc-suggestion-no {
-  background: var(--lior-acc-bg-subtle);
-  color: #000;
-}
-.lior-acc-suggestion-no:hover {
-  background: #e5e5ea;
-}
-.lior-acc-pos-left .lior-acc-auto-save-suggestion {
-  right: auto;
-  left: 18px;
 }
 .lior-acc-section-title {
   font-size: 17px;
@@ -1118,8 +1124,53 @@
   background: #ffffff !important;
   box-shadow: 0 0 0 2px var(--lior-acc-accent);
 }
+.lior-acc-profile-icon {
+  width: 18px;
+  height: 18px;
+  margin-inline-end: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.lior-acc-profile-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .lior-acc-profile-name {
   flex: 1;
+}
+.lior-acc-profile-delete {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: 8px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+.lior-acc-profile-delete:hover {
+  opacity: 1;
+}
+.lior-acc-profile-delete svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .lior-acc-profile-switch {
   width: 44px;
@@ -1181,6 +1232,24 @@
   color: #000000 !important;
   text-align: right;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 10px;
+}
+.lior-acc-category-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.lior-acc-category-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .lior-acc-category-header:hover {
   background: var(--lior-acc-bg-subtle) !important;
@@ -1238,7 +1307,10 @@
 }
 
 .lior-acc-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
   width: 100%;
   text-align: right;
   padding: 14px 18px;
@@ -1254,6 +1326,23 @@
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   animation: fadeInUp 0.5s ease 0.7s both;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.lior-acc-link-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.lior-acc-link-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .lior-acc-link:hover {
   transform: translateY(-2px);
@@ -1550,6 +1639,38 @@
 `;
 
   // ============================================
+  // SVG ICONS (Monochrome, Notion/Apple style)
+  // ============================================
+  const icons = {
+    eye: '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+    bookOpen: '<svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    zap: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    target: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+    type: '<svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
+    monitor: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+    link: '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+    compass: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>',
+    play: '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+    rotateCcw: '<svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>',
+    fileText: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
+    save: '<svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>',
+    moon: '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+    sun: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+    search: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>',
+    contrast: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/></svg>',
+    grayscale: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>',
+    refresh: '<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+    spacing: '<svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>',
+    highlight: '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+    mouse: '<svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>',
+    focus: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M23 12h-6m-6 0H1"/></svg>',
+    volume: '<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
+    pause: '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
+    delete: '<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+    accessibility: '<svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="M19 10v-2a2 2 0 0 0-2-2h-1M5 10V8a2 2 0 0 1 2-2h1m0 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M7 20h10"/><path d="M12 20v-8"/><path d="M8 12l4-4 4 4"/></svg>'
+  };
+
+  // ============================================
   // HTML TEMPLATE
   // ============================================
   const getHTML = (logoUrl) => `
@@ -1563,10 +1684,10 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1.45</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1.46</h2>
       <div style="display: flex; gap: 8px; align-items: center;">
         <button id="lior-acc-theme-toggle" class="lior-acc-theme-toggle" type="button" aria-label="החלף מצב כהה/בהיר" title="מצב כהה/בהיר">
-          <span class="lior-acc-theme-icon">🌙</span>
+          <span class="lior-acc-theme-icon">${icons.moon}</span>
         </button>
         <button id="lior-acc-close" class="lior-acc-close" type="button" aria-label="סגור">×</button>
       </div>
@@ -1578,28 +1699,33 @@
         <div id="lior-acc-custom-profiles-list" class="lior-acc-profiles-list"></div>
         <div class="lior-acc-profiles-list">
           <button class="lior-acc-profile-toggle" data-profile="vision" type="button" aria-pressed="false">
+            <span class="lior-acc-profile-icon">${icons.eye}</span>
             <span class="lior-acc-profile-name">ראייה</span>
             <span class="lior-acc-profile-switch"></span>
           </button>
           <button class="lior-acc-profile-toggle" data-profile="learning" type="button" aria-pressed="false">
+            <span class="lior-acc-profile-icon">${icons.bookOpen}</span>
             <span class="lior-acc-profile-name">לקויות למידה מורכבות</span>
             <span class="lior-acc-profile-switch"></span>
           </button>
           <button class="lior-acc-profile-toggle" data-profile="epilepsy" type="button" aria-pressed="false">
+            <span class="lior-acc-profile-icon">${icons.zap}</span>
             <span class="lior-acc-profile-name">אפילפסיה</span>
             <span class="lior-acc-profile-switch"></span>
           </button>
           <button class="lior-acc-profile-toggle" data-profile="adhd" type="button" aria-pressed="false">
+            <span class="lior-acc-profile-icon">${icons.target}</span>
             <span class="lior-acc-profile-name">קשב וריכוז</span>
             <span class="lior-acc-profile-switch"></span>
           </button>
           <button class="lior-acc-profile-toggle" data-profile="dyslexia" type="button" aria-pressed="false">
+            <span class="lior-acc-profile-icon">${icons.type}</span>
             <span class="lior-acc-profile-name">דיסלקציה</span>
             <span class="lior-acc-profile-switch"></span>
           </button>
         </div>
         <button id="lior-acc-save-profile" class="lior-acc-save-profile-btn" type="button">
-          <span class="lior-acc-save-icon">💾</span>
+          <span class="lior-acc-save-icon">${icons.save}</span>
           <span class="lior-acc-save-text">שמור פרופיל מותאם</span>
         </button>
         <p class="lior-acc-save-hint">שמור את כל ההגדרות כפרופיל שאפשר להפעיל בלחיצה אחת בכל ביקור באתר.</p>
@@ -1610,6 +1736,7 @@
         
         <div class="lior-acc-category">
           <button class="lior-acc-category-header" type="button" aria-expanded="false">
+            <span class="lior-acc-category-icon">${icons.monitor}</span>
             <span>תצוגה</span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
@@ -1617,35 +1744,35 @@
             <ul class="lior-acc-list">
               <li><button class="lior-acc-toggle" data-toggle="inc-text" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">🔍</span> הגדלת טקסט</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.search}</span> הגדלת טקסט</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מגדיל טקסט, מוסיף ניגודיות ומקטין בהירות</span>
               </button></li>
               <li><button class="lior-acc-toggle" data-toggle="high-contrast" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">☀️</span> ניגודיות גבוהה</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.contrast}</span> ניגודיות גבוהה</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">משפר את הניגודיות בין טקסט לרקע</span>
               </button></li>
               <li><button class="lior-acc-toggle" data-toggle="dark-contrast" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">🌙</span> ניגודיות כהה</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.moon}</span> ניגודיות כהה</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מעביר למצב כהה עם ניגודיות גבוהה</span>
               </button></li>
               <li><button class="lior-acc-toggle" data-toggle="grayscale" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">⚫</span> גווני אפור</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.grayscale}</span> גווני אפור</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מציג את האתר בגווני אפור בלבד</span>
               </button></li>
               <li><button class="lior-acc-toggle" data-toggle="invert" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">🔄</span> היפוך צבעים</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.refresh}</span> היפוך צבעים</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">הופך את כל הצבעים באתר</span>
@@ -1656,6 +1783,7 @@
 
         <div class="lior-acc-category">
           <button class="lior-acc-category-header" type="button" aria-expanded="false">
+            <span class="lior-acc-category-icon">${icons.type}</span>
             <span>טקסט</span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
@@ -1663,14 +1791,14 @@
             <ul class="lior-acc-list">
               <li><button class="lior-acc-toggle" data-toggle="spacing" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">📏</span> ריווח טקסט</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.spacing}</span> ריווח טקסט</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מגדיל ריווח בין מילים, אותיות ושורות</span>
               </button></li>
               <li><button class="lior-acc-toggle" data-toggle="dyslexia" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">📖</span> גופן נגיש (דיסלקסיה)</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.bookOpen}</span> גופן נגיש (דיסלקסיה)</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">משנה לגופן מותאם לקריאה קלה יותר</span>
@@ -1681,6 +1809,7 @@
 
         <div class="lior-acc-category">
           <button class="lior-acc-category-header" type="button" aria-expanded="false">
+            <span class="lior-acc-category-icon">${icons.link}</span>
             <span>קישורים</span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
@@ -1688,14 +1817,14 @@
             <ul class="lior-acc-list">
               <li><button class="lior-acc-toggle" data-toggle="underline-links" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">🔗</span> קו תחתון לקישורים</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.link}</span> קו תחתון לקישורים</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מוסיף קו תחתון לכל הקישורים</span>
               </button></li>
               <li><button class="lior-acc-toggle" data-toggle="highlight-links" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">✨</span> הדגשת קישורים</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.highlight}</span> הדגשת קישורים</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מדגיש קישורים עם מסגרת בולטת</span>
@@ -1706,6 +1835,7 @@
 
         <div class="lior-acc-category">
           <button class="lior-acc-category-header" type="button" aria-expanded="false">
+            <span class="lior-acc-category-icon">${icons.compass}</span>
             <span>ניווט</span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
@@ -1713,28 +1843,28 @@
             <ul class="lior-acc-list">
               <li><button class="lior-acc-toggle" data-toggle="big-cursor" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">🖱️</span> סמן עכבר גדול</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.mouse}</span> סמן עכבר גדול</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מגדיל את סמן העכבר לזיהוי קל יותר</span>
               </button></li>
               <li><button class="lior-acc-toggle" data-toggle="reading-focus" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">👁️</span> פוקוס קריאה</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.eye}</span> פוקוס קריאה</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מפשט משפטים מורכבים לטקסט קריא</span>
               </button></li>
               <li><button class="lior-acc-toggle" data-toggle="focus-highlight" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">🎯</span> הדגשת פוקוס</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.target}</span> הדגשת פוקוס</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מדגיש את האלמנט הממוקד בצבע בולט</span>
               </button></li>
               <li><button class="lior-acc-toggle" data-action="text-to-speech" type="button">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">🔊</span> קריאה בקול</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.volume}</span> קריאה בקול</span>
                 </span>
                 <span class="lior-acc-toggle-description">מקריא את הטקסט הנבחר בקול</span>
               </button></li>
@@ -1744,6 +1874,7 @@
 
         <div class="lior-acc-category">
           <button class="lior-acc-category-header" type="button" aria-expanded="false">
+            <span class="lior-acc-category-icon">${icons.play}</span>
             <span>אנימציות</span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
@@ -1751,7 +1882,7 @@
             <ul class="lior-acc-list">
               <li><button class="lior-acc-toggle" data-toggle="no-anim" aria-pressed="false">
                 <span class="lior-acc-toggle-label">
-                  <span><span class="lior-acc-icon" aria-hidden="true">⏸️</span> ביטול אנימציות</span>
+                  <span><span class="lior-acc-icon" aria-hidden="true">${icons.pause}</span> ביטול אנימציות</span>
                   <span class="lior-acc-toggle-switch"></span>
                 </span>
                 <span class="lior-acc-toggle-description">מבטל כל האנימציות והמעברים באתר</span>
@@ -1761,8 +1892,14 @@
         </div>
       </div>
       
-      <button id="lior-acc-reset" class="lior-acc-reset" type="button">איפוס הגדרות</button>
-      <button id="lior-acc-declaration" class="lior-acc-link" type="button">הצהרת נגישות</button>
+      <button id="lior-acc-reset" class="lior-acc-reset" type="button">
+        <span class="lior-acc-reset-icon">${icons.rotateCcw}</span>
+        <span>איפוס הגדרות</span>
+      </button>
+      <button id="lior-acc-declaration" class="lior-acc-link" type="button">
+        <span class="lior-acc-link-icon">${icons.fileText}</span>
+        <span>הצהרת נגישות</span>
+      </button>
     </div>
   </div>
 </div>
@@ -2069,9 +2206,6 @@
       
       // Persist state after change
       persistState();
-      
-      // Check if we should suggest saving profile
-      checkAutoSaveSuggestion();
     }
     
     const btn = toggleButtons.get(name);
@@ -2121,7 +2255,7 @@
             const label = btn.querySelector('.lior-acc-toggle-label span span')?.textContent?.replace(/\(.*?\)/, '').trim() || 'הגדלת טקסט';
             const labelEl = btn.querySelector('.lior-acc-toggle-label span');
             if (labelEl) {
-              labelEl.innerHTML = `<span class="lior-acc-icon" aria-hidden="true">🔍</span> ${label} (${sizes[level]})`;
+                      labelEl.innerHTML = `<span class="lior-acc-icon" aria-hidden="true">${icons.search}</span> ${label} (${sizes[level]})`;
             }
           }
         }
@@ -2349,7 +2483,7 @@
       isSpeaking = false;
       if (speechButton) {
         const icon = speechButton.querySelector('.lior-acc-icon');
-        if (icon) icon.textContent = '🔊';
+        if (icon) icon.innerHTML = icons.volume;
       }
       showToast('קריאה הופסקה');
       return;
@@ -2374,7 +2508,7 @@
       isSpeaking = false;
       if (speechButton) {
         const icon = speechButton.querySelector('.lior-acc-icon');
-        if (icon) icon.textContent = '🔊';
+        if (icon) icon.innerHTML = icons.volume;
       }
     };
     
@@ -2383,7 +2517,7 @@
       isSpeaking = false;
       if (speechButton) {
         const icon = speechButton.querySelector('.lior-acc-icon');
-        if (icon) icon.textContent = '🔊';
+        if (icon) icon.innerHTML = icons.volume;
       }
       showToast('שגיאה בקריאה בקול');
     };
@@ -2398,7 +2532,7 @@
       speechButton = button;
       const icon = button.querySelector('.lior-acc-icon');
       if (icon) {
-        icon.textContent = '⏹️';
+        icon.innerHTML = icons.pause;
       }
     }
     
@@ -2867,65 +3001,6 @@
     }
   }
 
-  function checkAutoSaveSuggestion() {
-    // Suggest saving after 3-4 changes within 10 seconds
-    if (accessibilityState.settingsChangeCount >= 3 && 
-        accessibilityState.lastChangeTime && 
-        (Date.now() - accessibilityState.lastChangeTime) < 10000 &&
-        !accessibilityState.autoSaveSuggestionShown) {
-      
-      accessibilityState.autoSaveSuggestionShown = true;
-      showAutoSaveSuggestion();
-    }
-  }
-
-  function showAutoSaveSuggestion() {
-    const suggestion = doc.createElement('div');
-    suggestion.className = 'lior-acc-auto-save-suggestion';
-    suggestion.innerHTML = `
-      <div class="lior-acc-suggestion-content">
-        <span>נראה ששינית הרבה הגדרות. לשמור את זה בתור פרופיל מותאם?</span>
-        <div class="lior-acc-suggestion-actions">
-          <button class="lior-acc-suggestion-btn lior-acc-suggestion-yes">כן, שמור</button>
-          <button class="lior-acc-suggestion-btn lior-acc-suggestion-no">לא, תודה</button>
-        </div>
-      </div>
-    `;
-    
-    const rootEl = byId('lior-acc-root');
-    if (rootEl) {
-      rootEl.appendChild(suggestion);
-      
-      setTimeout(() => {
-        suggestion.classList.add('show');
-      }, 100);
-      
-      // Auto hide after 5 seconds
-      setTimeout(() => {
-        if (suggestion.parentNode) {
-          suggestion.classList.remove('show');
-          setTimeout(() => {
-            if (suggestion.parentNode) {
-              suggestion.remove();
-            }
-          }, 300);
-        }
-      }, 5000);
-      
-      // Event listeners
-      suggestion.querySelector('.lior-acc-suggestion-yes')?.addEventListener('click', () => {
-        handleSaveProfile();
-        suggestion.classList.remove('show');
-        setTimeout(() => suggestion.remove(), 300);
-      });
-      
-      suggestion.querySelector('.lior-acc-suggestion-no')?.addEventListener('click', () => {
-        suggestion.classList.remove('show');
-        setTimeout(() => suggestion.remove(), 300);
-      });
-    }
-  }
-
   function renderCustomProfiles() {
     const container = byId('lior-acc-custom-profiles-list');
     if (!container) return;
@@ -2948,6 +3023,10 @@
       profileBtn.setAttribute('type', 'button');
       profileBtn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       
+      const iconSpan = doc.createElement('span');
+      iconSpan.className = 'lior-acc-profile-icon';
+      iconSpan.innerHTML = icons.save;
+      
       const nameSpan = doc.createElement('span');
       nameSpan.className = 'lior-acc-profile-name';
       nameSpan.textContent = profile.name;
@@ -2959,7 +3038,7 @@
       deleteBtn.className = 'lior-acc-profile-delete';
       deleteBtn.setAttribute('type', 'button');
       deleteBtn.setAttribute('aria-label', 'מחק פרופיל');
-      deleteBtn.textContent = '🗑️';
+      deleteBtn.innerHTML = icons.delete;
       deleteBtn.onclick = (e) => {
         e.stopPropagation();
         if (confirm('האם למחוק את הפרופיל "' + profile.name + '"?')) {
@@ -2967,6 +3046,7 @@
         }
       };
       
+      profileBtn.appendChild(iconSpan);
       profileBtn.appendChild(nameSpan);
       profileBtn.appendChild(switchSpan);
       profileBtn.appendChild(deleteBtn);
@@ -3090,7 +3170,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1.45';
+    if (title) title.textContent = t('settings') + ' v0.1.46';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -3237,7 +3317,7 @@
             const rootEl = byId('lior-acc-root');
             if (rootEl) rootEl.classList.add('dark-mode');
             const icon = themeToggle.querySelector('.lior-acc-theme-icon');
-            if (icon) icon.textContent = '☀️';
+            if (icon) icon.innerHTML = icons.sun;
           }
         } catch (err) {
           // Ignore
@@ -3251,7 +3331,7 @@
           if (isDark) {
             rootEl.classList.remove('dark-mode');
             const icon = themeToggle.querySelector('.lior-acc-theme-icon');
-            if (icon) icon.textContent = '🌙';
+            if (icon) icon.innerHTML = icons.moon;
             try {
               localStorage.setItem('lior-acc-theme', 'light');
             } catch (err) {
@@ -3261,7 +3341,7 @@
           } else {
             rootEl.classList.add('dark-mode');
             const icon = themeToggle.querySelector('.lior-acc-theme-icon');
-            if (icon) icon.textContent = '☀️';
+            if (icon) icon.innerHTML = icons.sun;
             try {
               localStorage.setItem('lior-acc-theme', 'dark');
             } catch (err) {
@@ -3299,7 +3379,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.1.45 loaded');
+      console.log('Lior Accessibility Widget v0.1.46 loaded');
     };
     
     // Start setup - will retry if elements are not ready
