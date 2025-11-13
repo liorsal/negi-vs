@@ -363,15 +363,16 @@
   line-height: 1.4;
 }
 .lior-acc-pos-right { 
-  right: 18px; 
-  left: auto;
+  right: 18px !important; 
+  left: auto !important;
 }
 .lior-acc-pos-left { 
-  left: 18px; 
-  right: auto;
+  left: 18px !important; 
+  right: auto !important;
 }
 
 .lior-acc-button {
+  position: relative !important;
   width: var(--lior-acc-size);
   height: var(--lior-acc-size);
   border-radius: 50%;
@@ -386,6 +387,8 @@
   padding: 0;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  bottom: auto !important;
+  top: auto !important;
 }
 .lior-acc-button:hover {
   transform: scale(1.1);
