@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.8.4)
+ * Lior Accessibility Widget v2.0 (v0.8.5)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -508,7 +508,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.8.4';
+  content: ' v0.8.5';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -867,7 +867,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.8.4';
+    content: ' v0.8.5';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -3073,28 +3073,77 @@
   function actuallyClosePanel() {
     const root = byId('lior-acc-root');
     const panel = byId('lior-acc-panel');
+    const overlay = byId('lior-acc-overlay');
     const button = byId('lior-acc-button');
+    const htmlRoot = doc.documentElement;
+    const declModal = byId('lior-acc-declaration-modal');
+    const keyboardModal = byId('lior-acc-keyboard-shortcuts-modal');
 
     state.open = false;
-    panel.classList.remove('show');
-    panel.hidden = true;
-    panel.setAttribute('aria-hidden', 'true');
-    panel.style.transform = '';
-    panel.style.opacity = '';
 
-    root?.classList.remove('lior-acc-open');
+    // Close panel itself
+    if (panel) {
+      panel.classList.remove('show');
+      panel.hidden = true;
+      panel.setAttribute('aria-hidden', 'true');
+      panel.style.transform = '';
+      panel.style.opacity = '';
+    }
+
+    // Close overlay
+    if (overlay) {
+      overlay.hidden = true;
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.style.opacity = '0';
+    }
+
+    // Close declaration modal if somehow open
+    if (declModal) {
+      declModal.classList.remove('show');
+      declModal.hidden = true;
+      declModal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Close keyboard shortcuts modal if somehow open
+    if (keyboardModal) {
+      keyboardModal.classList.remove('show');
+      keyboardModal.hidden = true;
+      keyboardModal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Remove root open class
+    if (root) {
+      root.classList.remove('lior-acc-open');
+    }
+
+    // Ensure body overflow is restored
     doc.body.style.overflow = '';
 
+    // Remove reading-focus class directly from HTML element (even if state is out of sync)
+    if (htmlRoot) {
+      htmlRoot.classList.remove('acc-reading-focus');
+    }
+
+    // Disable reading-focus toggle if active (via state)
+    if (toggleState.get('reading-focus')) {
+      applyToggle('reading-focus', false, true); // Disable reading-focus, skip profile reset
+      persistToggle('reading-focus', false);     // Update localStorage
+    }
+
+    // Release all inert elements
+    setOutsideInert(false);
+
+    // Restore focus to button
     if (button) {
       button.setAttribute('aria-expanded', 'false');
       button.focus();
     }
 
-    // Fix: Disable reading-focus when closing panel to prevent page blocking
-    if (toggleState.get('reading-focus')) {
-      applyToggle('reading-focus', false, true); // Disable reading-focus, skip profile reset
-      persistToggle('reading-focus', false);     // Update localStorage
+    // Restore focus to last focused element if exists
+    if (state.lastFocused && typeof state.lastFocused.focus === 'function') {
+      state.lastFocused.focus();
     }
+    state.lastFocused = null;
   }
 
   // Alias for backward compatibility
@@ -4069,7 +4118,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.8.4 loaded');
+      console.log('Lior Accessibility Widget v0.8.5 loaded');
     };
     
     // Start setup - will retry if elements are not ready
