@@ -2841,6 +2841,11 @@
     panel.hidden = false;
     panel.setAttribute('aria-hidden', 'false');
     panel.setAttribute('tabindex', '-1');
+    
+    // Reset transform and opacity before opening (in case of previous swipe)
+    panel.style.transform = '';
+    panel.style.opacity = '';
+    
     // Prevent body scroll on mobile
     if (window.innerWidth <= 768) {
       doc.body.style.overflow = 'hidden';
@@ -2848,6 +2853,9 @@
     
     requestAnimationFrame(() => {
       panel.classList.add('show');
+      // Ensure transform is reset when opening
+      panel.style.transform = '';
+      panel.style.opacity = '';
     });
     if (overlay) {
       overlay.hidden = false;
@@ -2902,11 +2910,17 @@
       const threshold = 100; // Minimum swipe distance to close
       
       if (deltaY > threshold) {
+        // Close panel - reset styles will be handled in closePanel
         closePanel();
       } else {
-        // Snap back
+        // Snap back with smooth transition
+        panel.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
         panel.style.transform = '';
         panel.style.opacity = '';
+        // Remove transition after animation completes
+        setTimeout(() => {
+          panel.style.transition = '';
+        }, 300);
       }
     };
     
@@ -2933,6 +2947,10 @@
     if (panel) {
       panel.classList.remove('show');
       
+      // Reset transform and opacity from swipe
+      panel.style.transform = '';
+      panel.style.opacity = '';
+      
       // Restore body scroll on mobile
       if (window.innerWidth <= 768) {
         doc.body.style.overflow = '';
@@ -2947,6 +2965,9 @@
         panel.setAttribute('aria-hidden', 'true');
         if (body) body.style.animation = '';
         if (header) header.style.animation = '';
+        // Ensure transform is reset after close
+        panel.style.transform = '';
+        panel.style.opacity = '';
       }, 400);
     }
     if (overlay) {
