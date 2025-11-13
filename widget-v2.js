@@ -1546,6 +1546,35 @@
 .lior-acc-category-content--opening {
   animation: slideDown 0.18s ease-out;
 }
+@keyframes lior-acc-genie-close {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    border-radius: 24px 24px 0 0;
+  }
+  40% {
+    transform: translateY(10vh) scale(0.98, 0.9);
+    opacity: 0.85;
+  }
+  70% {
+    transform: translateY(40vh) scale(0.94, 0.6);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(100%) scale(0.9, 0.15);
+    opacity: 0;
+    border-radius: 24px;
+  }
+}
+.lior-acc-panel.lior-acc-panel--closing {
+  animation: lior-acc-genie-close 0.42s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lior-acc-panel.lior-acc-panel--closing {
+    animation: none !important;
+  }
+}
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -2469,6 +2498,7 @@
   const toggleState = new Map();
   const state = {
     open: false,
+    closing: false,
     lastFocused: null,
     currentLang: 'he'
   };
