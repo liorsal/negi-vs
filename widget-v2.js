@@ -830,7 +830,7 @@
     filter: blur(0);
   }
   .lior-acc-panel-header {
-    padding: 16px 20px 12px;
+    padding: 20px 20px 16px;
     border-bottom: 1px solid var(--lior-acc-border);
     position: relative;
   }
@@ -844,6 +844,16 @@
     height: 4px;
     background: #ddd;
     border-radius: 2px;
+  }
+  .lior-acc-panel-header h2 {
+    margin-top: 10px;
+  }
+  .lior-acc-panel-header h2::after {
+    content: ' v0.52.0';
+    font-size: 12px;
+    font-weight: 400;
+    color: #999;
+    margin-inline-start: 4px;
   }
   .lior-acc-panel-body {
     max-height: calc(85vh - 60px);
@@ -1117,6 +1127,7 @@
     bottom: 0;
     margin-top: 16px;
     margin-bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0);
     z-index: 10;
     background: var(--lior-acc-accent) !important;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
@@ -1124,6 +1135,9 @@
   .lior-acc-save-profile-btn:active {
     transform: scale(0.98);
     transition: transform 0.08s ease;
+  }
+  .lior-acc-panel-body {
+    padding-bottom: 80px; /* Space for sticky button */
   }
 }
 .lior-acc-save-icon {
@@ -1872,7 +1886,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.52.0</h2>
+      <h2 id="lior-acc-title">תפריט נגישות</h2>
       <div style="display: flex; gap: 8px; align-items: center;">
         <button id="lior-acc-theme-toggle" class="lior-acc-theme-toggle" type="button" aria-label="החלף מצב כהה/בהיר" title="מצב כהה/בהיר">
           <span class="lior-acc-theme-icon">${icons.moon}</span>
@@ -2755,6 +2769,68 @@
     const focusable = getFocusable(panel);
     const focusTarget = focusable[0] || byId('lior-acc-close') || panel;
     focusTarget.focus();
+    
+    // Add swipe down to close on mobile
+    if (window.innerWidth <= 768) {
+      addSwipeToClose(panel);
+    }
+  }
+  
+  function addSwipeToClose(panel) {
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    
+    const handleTouchStart = (e) => {
+      // Only allow swipe from header area (handle or header)
+      const header = panel.querySelector('.lior-acc-panel-header');
+      if (!header || !header.contains(e.target)) return;
+      
+      startY = e.touches[0].clientY;
+      isDragging = true;
+      panel.style.transition = 'none';
+    };
+    
+    const handleTouchMove = (e) => {
+      if (!isDragging) return;
+      currentY = e.touches[0].clientY;
+      const deltaY = currentY - startY;
+      
+      // Only allow downward swipe
+      if (deltaY > 0) {
+        panel.style.transform = `translateY(${deltaY}px)`;
+        // Add slight opacity fade
+        const opacity = Math.max(0.7, 1 - (deltaY / 300));
+        panel.style.opacity = opacity;
+      }
+    };
+    
+    const handleTouchEnd = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      panel.style.transition = '';
+      
+      const deltaY = currentY - startY;
+      const threshold = 100; // Minimum swipe distance to close
+      
+      if (deltaY > threshold) {
+        closePanel();
+      } else {
+        // Snap back
+        panel.style.transform = '';
+        panel.style.opacity = '';
+      }
+    };
+    
+    // Remove old listeners if any
+    panel.removeEventListener('touchstart', handleTouchStart);
+    panel.removeEventListener('touchmove', handleTouchMove);
+    panel.removeEventListener('touchend', handleTouchEnd);
+    
+    // Add new listeners
+    panel.addEventListener('touchstart', handleTouchStart, { passive: true });
+    panel.addEventListener('touchmove', handleTouchMove, { passive: true });
+    panel.addEventListener('touchend', handleTouchEnd, { passive: true });
   }
 
   function closePanel() {
@@ -3369,7 +3445,10 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.52.0';
+    if (title) {
+      title.textContent = t('settings');
+      // Version is added via CSS ::after
+    }
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
