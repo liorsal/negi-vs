@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.8.0)
+ * Lior Accessibility Widget v2.0 (v0.8.4)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -508,7 +508,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.8.0';
+  content: ' v0.8.4';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -867,7 +867,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.8.0';
+    content: ' v0.8.4';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -3089,6 +3089,12 @@
       button.setAttribute('aria-expanded', 'false');
       button.focus();
     }
+
+    // Fix: Disable reading-focus when closing panel to prevent page blocking
+    if (toggleState.get('reading-focus')) {
+      applyToggle('reading-focus', false, true); // Disable reading-focus, skip profile reset
+      persistToggle('reading-focus', false);     // Update localStorage
+    }
   }
 
   // Alias for backward compatibility
@@ -4063,7 +4069,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.8.0 loaded');
+      console.log('Lior Accessibility Widget v0.8.4 loaded');
     };
     
     // Start setup - will retry if elements are not ready
