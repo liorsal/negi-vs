@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.6.2)
+ * Lior Accessibility Widget v2.0 (v0.8.0)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -446,16 +446,18 @@
   z-index: var(--lior-acc-z);
   transform: translateY(30px) scale(0.95);
   opacity: 0;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: blur(4px);
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out,
+              opacity 0.25s ease-out,
+              filter 0.25s ease-out;
   max-height: 85vh;
   overflow-y: auto;
-  filter: blur(4px);
 }
 .lior-acc-panel[hidden] {
   display: none !important;
 }
-.lior-acc-panel.show,
-.lior-acc-panel:not([hidden]) {
+.lior-acc-panel.show {
   transform: translateY(0) scale(1);
   opacity: 1;
   filter: blur(0);
@@ -506,7 +508,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.6.2';
+  content: ' v0.8.0';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -865,7 +867,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.6.2';
+    content: ' v0.8.0';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -2993,68 +2995,75 @@
     panel.addEventListener('touchend', handleTouchEnd, { passive: true });
   }
 
-  function closePanel() {
-    if (!state.open) return;
-    const button = byId('lior-acc-button');
+  function closePanelWithAnimation() {
     const panel = byId('lior-acc-panel');
     const overlay = byId('lior-acc-overlay');
+    if (!panel || !state.open || state.closing) return;
+
+    const prefersReduced =
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) {
+      actuallyClosePanel();
+      return;
+    }
+
+    // מנקים שאריות סווייפ (אם יש)
+    panel.style.transform = '';
+    panel.style.opacity = '';
+
+    // מאפסים layout כדי שהאנימציה תתחיל נקי
+    void panel.offsetWidth;
+
+    state.closing = true;
+
+    panel.classList.add('lior-acc-panel--closing');
+
+    if (overlay) {
+      overlay.style.transition = 'opacity 0.42s ease-out';
+      overlay.style.opacity = '0';
+    }
+
+    const onEnd = (e) => {
+      if (e.target !== panel) return;
+      panel.removeEventListener('animationend', onEnd);
+      panel.classList.remove('lior-acc-panel--closing');
+      if (overlay) {
+        overlay.style.opacity = '';
+        overlay.style.transition = '';
+      }
+      state.closing = false;
+      actuallyClosePanel();
+    };
+
+    panel.addEventListener('animationend', onEnd);
+  }
+
+  function actuallyClosePanel() {
     const root = byId('lior-acc-root');
-    
-    // Check if user prefers reduced motion
-    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const closeDelay = prefersReduced ? 0 : 400;
-    
+    const panel = byId('lior-acc-panel');
+    const button = byId('lior-acc-button');
+
     state.open = false;
+    panel.classList.remove('show');
+    panel.hidden = true;
+    panel.setAttribute('aria-hidden', 'true');
+    panel.style.transform = '';
+    panel.style.opacity = '';
+
+    root?.classList.remove('lior-acc-open');
+    doc.body.style.overflow = '';
+
     if (button) {
       button.setAttribute('aria-expanded', 'false');
+      button.focus();
     }
-    if (panel) {
-      panel.classList.remove('show');
-      
-      // Reset transform and opacity from swipe
-      panel.style.transform = '';
-      panel.style.opacity = '';
-      
-      // Restore body scroll on mobile
-      if (window.innerWidth <= 768) {
-        doc.body.style.overflow = '';
-      }
-      
-      const body = panel.querySelector('.lior-acc-panel-body');
-      const header = panel.querySelector('.lior-acc-panel-header');
-      if (body) body.style.animation = 'none';
-      if (header) header.style.animation = 'none';
-      
-      const doClose = () => {
-        panel.hidden = true;
-        panel.setAttribute('aria-hidden', 'true');
-        if (body) body.style.animation = '';
-        if (header) header.style.animation = '';
-        // Ensure transform is reset after close
-        panel.style.transform = '';
-        panel.style.opacity = '';
-      };
-      
-      if (prefersReduced) {
-        // Close immediately if reduced motion
-        doClose();
-      } else {
-        // Wait for animation if motion is allowed
-        setTimeout(doClose, closeDelay);
-      }
-    }
-    if (overlay) {
-      overlay.hidden = true;
-      overlay.setAttribute('aria-hidden', 'true');
-    }
-    if (root) {
-      root.classList.remove('lior-acc-open');
-    }
-    setOutsideInert(false);
-    if (state.lastFocused && typeof state.lastFocused.focus === 'function') {
-      state.lastFocused.focus();
-    }
-    state.lastFocused = null;
+  }
+
+  // Alias for backward compatibility
+  function closePanel() {
+    closePanelWithAnimation();
   }
 
   function handleDocumentKeydown(event) {
@@ -4024,7 +4033,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.6.2 loaded');
+      console.log('Lior Accessibility Widget v0.8.0 loaded');
     };
     
     // Start setup - will retry if elements are not ready
