@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.1.32)
+ * Lior Accessibility Widget v2.0 (v0.1.4)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -963,6 +963,98 @@
 .lior-acc-save-profile-btn:active {
   transform: translateY(0);
 }
+.lior-acc-save-profile-btn .lior-acc-save-icon {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lior-acc-save-profile-btn:hover .lior-acc-save-icon {
+  transform: scale(1.1);
+}
+.lior-acc-save-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+  text-align: right;
+  line-height: 1.4;
+  padding: 0 4px;
+}
+.lior-acc-active-profile-indicator {
+  font-size: 13px;
+  color: var(--lior-acc-accent);
+  font-weight: 500;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(74, 144, 226, 0.1);
+  border-radius: 8px;
+  text-align: right;
+}
+.lior-acc-profile-toggle.active {
+  box-shadow: 0 0 0 2px var(--lior-acc-accent) !important;
+  background: rgba(74, 144, 226, 0.05) !important;
+}
+.lior-acc-auto-save-suggestion {
+  position: fixed;
+  bottom: 120px;
+  right: 18px;
+  z-index: calc(var(--lior-acc-z) + 5);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.lior-acc-auto-save-suggestion.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.lior-acc-suggestion-content {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  max-width: 320px;
+  border: 1px solid var(--lior-acc-border);
+}
+.lior-acc-suggestion-content span {
+  display: block;
+  font-size: 14px;
+  color: #000;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  text-align: right;
+}
+.lior-acc-suggestion-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.lior-acc-suggestion-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lior-acc-suggestion-yes {
+  background: var(--lior-acc-accent);
+  color: #fff;
+}
+.lior-acc-suggestion-yes:hover {
+  background: var(--lior-acc-accent-hover);
+}
+.lior-acc-suggestion-no {
+  background: var(--lior-acc-bg-subtle);
+  color: #000;
+}
+.lior-acc-suggestion-no:hover {
+  background: #e5e5ea;
+}
+.lior-acc-pos-left .lior-acc-auto-save-suggestion {
+  right: auto;
+  left: 18px;
+}
 .lior-acc-section-title {
   font-size: 17px;
   font-weight: 500;
@@ -1471,7 +1563,7 @@
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
     <div class="lior-acc-panel-header">
-      <h2 id="lior-acc-title">תפריט נגישות v0.1.32</h2>
+      <h2 id="lior-acc-title">תפריט נגישות v0.1.4</h2>
       <div style="display: flex; gap: 8px; align-items: center;">
         <button id="lior-acc-theme-toggle" class="lior-acc-theme-toggle" type="button" aria-label="החלף מצב כהה/בהיר" title="מצב כהה/בהיר">
           <span class="lior-acc-theme-icon">🌙</span>
@@ -1482,6 +1574,7 @@
     <div class="lior-acc-panel-body">
       <div class="lior-acc-profiles-section">
         <h3 class="lior-acc-section-title">פרופילים</h3>
+        <div id="lior-acc-active-profile-indicator" class="lior-acc-active-profile-indicator" style="display: none;"></div>
         <div id="lior-acc-custom-profiles-list" class="lior-acc-profiles-list"></div>
         <div class="lior-acc-profiles-list">
           <button class="lior-acc-profile-toggle" data-profile="vision" type="button" aria-pressed="false">
@@ -1505,7 +1598,11 @@
             <span class="lior-acc-profile-switch"></span>
           </button>
         </div>
-        <button id="lior-acc-save-profile" class="lior-acc-save-profile-btn" type="button">💾 שמור פרופיל מותאם</button>
+        <button id="lior-acc-save-profile" class="lior-acc-save-profile-btn" type="button">
+          <span class="lior-acc-save-icon">💾</span>
+          <span class="lior-acc-save-text">שמור פרופיל מותאם</span>
+        </button>
+        <p class="lior-acc-save-hint">שמור את כל ההגדרות כפרופיל שאפשר להפעיל בלחיצה אחת בכל ביקור באתר.</p>
       </div>
 
       <div class="lior-acc-settings-section">
@@ -1894,6 +1991,15 @@
     currentLang: 'he'
   };
 
+  // Global accessibility state - single source of truth
+  const accessibilityState = {
+    currentSettings: {},
+    activeProfileId: null,
+    profiles: [],
+    settingsChangeCount: 0,
+    lastChangeTime: null
+  };
+
   const GLOBAL_STORAGE_KEY = 'liorAccGlobalSettings';
   const CUSTOM_PROFILES_KEY = 'liorAccCustomProfiles';
   const storageKey = (name) => `acc-${name}`;
@@ -1945,10 +2051,90 @@
     const className = `acc-${name}`;
     root.classList.toggle(className, !!isOn);
     toggleState.set(name, !!isOn);
+    // Update global state
+    accessibilityState.currentSettings[name] = !!isOn;
+    accessibilityState.settingsChangeCount++;
+    accessibilityState.lastChangeTime = Date.now();
+    
+    // If settings changed manually, clear active profile
+    if (accessibilityState.activeProfileId) {
+      accessibilityState.activeProfileId = null;
+      updateActiveProfileIndicator();
+      renderCustomProfiles();
+    }
+    
     const btn = toggleButtons.get(name);
     if (btn) {
       btn.setAttribute('aria-pressed', isOn ? 'true' : 'false');
     }
+    
+    // Check if we should suggest saving profile
+    checkAutoSaveSuggestion();
+  }
+  
+  function getCurrentSettingsSnapshot() {
+    const settings = {};
+    TOGGLES.forEach((name) => {
+      settings[name] = toggleState.get(name) || false;
+    });
+    // Include text size level if exists
+    const textLevel = toggleState.get('inc-text-level') || 0;
+    if (textLevel > 0) {
+      settings['inc-text-level'] = textLevel;
+    }
+    return settings;
+  }
+  
+  function applySettingsToDOM(settings, skipProfileReset = false) {
+    // Reset all first
+    TOGGLES.forEach((name) => {
+      root.classList.remove(`acc-${name}`);
+      toggleState.set(name, false);
+      accessibilityState.currentSettings[name] = false;
+      const btn = toggleButtons.get(name);
+      if (btn) btn.setAttribute('aria-pressed', 'false');
+    });
+    
+    // Apply settings
+    Object.keys(settings).forEach((name) => {
+      if (name === 'inc-text-level') {
+        const level = settings[name];
+        if (level > 0 && level <= 3) {
+          root.classList.remove('acc-inc-text-1', 'acc-inc-text-2', 'acc-inc-text-3');
+          root.classList.add(`acc-inc-text-${level}`);
+          toggleState.set('inc-text', true);
+          toggleState.set('inc-text-level', level);
+          accessibilityState.currentSettings['inc-text'] = true;
+          accessibilityState.currentSettings['inc-text-level'] = level;
+          const btn = toggleButtons.get('inc-text');
+          if (btn) {
+            btn.setAttribute('aria-pressed', 'true');
+            const sizes = ['', '118%', '150%', '200%'];
+            const label = btn.querySelector('.lior-acc-toggle-label span span')?.textContent?.replace(/\(.*?\)/, '').trim() || 'הגדלת טקסט';
+            const labelEl = btn.querySelector('.lior-acc-toggle-label span');
+            if (labelEl) {
+              labelEl.innerHTML = `<span class="lior-acc-icon" aria-hidden="true">🔍</span> ${label} (${sizes[level]})`;
+            }
+          }
+        }
+      } else if (TOGGLES.includes(name)) {
+        const className = `acc-${name}`;
+        const isOn = settings[name];
+        root.classList.toggle(className, !!isOn);
+        toggleState.set(name, !!isOn);
+        accessibilityState.currentSettings[name] = !!isOn;
+        const btn = toggleButtons.get(name);
+        if (btn) {
+          btn.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+        }
+      }
+    });
+    
+    if (!skipProfileReset) {
+      accessibilityState.settingsChangeCount = 0;
+    }
+    
+    updateProfileStates();
   }
 
   function persistToggle(name, isOn) {
@@ -2374,45 +2560,122 @@
     }
   }
 
-  function saveCustomProfile(name, settings) {
+  function loadProfilesFromStorage() {
     try {
-      const profiles = JSON.parse(localStorage.getItem(CUSTOM_PROFILES_KEY) || '{}');
-      profiles[name] = {
-        settings: settings,
-        createdAt: new Date().toISOString()
+      const saved = localStorage.getItem(CUSTOM_PROFILES_KEY);
+      if (saved) {
+        const profilesData = JSON.parse(saved);
+        // Convert old format to new format if needed
+        if (Array.isArray(profilesData)) {
+          accessibilityState.profiles = profilesData;
+        } else if (typeof profilesData === 'object') {
+          // Old format - convert to array
+          accessibilityState.profiles = Object.keys(profilesData).map(name => ({
+            id: crypto.randomUUID ? crypto.randomUUID() : 'profile-' + Date.now() + '-' + Math.random(),
+            name: name,
+            createdAt: profilesData[name].createdAt || Date.now(),
+            settings: profilesData[name].settings || {},
+            domain: null
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn('Lior Accessibility: unable to load profiles', err);
+      accessibilityState.profiles = [];
+    }
+  }
+
+  function saveProfilesToStorage() {
+    try {
+      localStorage.setItem(CUSTOM_PROFILES_KEY, JSON.stringify(accessibilityState.profiles));
+    } catch (err) {
+      console.warn('Lior Accessibility: unable to save profiles', err);
+    }
+  }
+
+  function saveCustomProfile(name, settings, domain = null) {
+    try {
+      const profile = {
+        id: crypto.randomUUID ? crypto.randomUUID() : 'profile-' + Date.now() + '-' + Math.random(),
+        name: name,
+        createdAt: Date.now(),
+        settings: { ...settings },
+        domain: domain || null
       };
-      localStorage.setItem(CUSTOM_PROFILES_KEY, JSON.stringify(profiles));
+
+      accessibilityState.profiles.push(profile);
+      accessibilityState.activeProfileId = profile.id;
+      saveProfilesToStorage();
       renderCustomProfiles();
+      
+      // Animate save button
+      const saveBtn = byId('lior-acc-save-profile');
+      if (saveBtn) {
+        saveBtn.style.transform = 'rotate(180deg) scale(1.1)';
+        setTimeout(() => {
+          saveBtn.style.transform = '';
+        }, 300);
+      }
+      
       showToast('פרופיל נשמר בהצלחה: ' + name);
-      return true;
+      return profile.id;
     } catch (err) {
       console.warn('Lior Accessibility: unable to save custom profile', err);
       showToast('שגיאה בשמירת פרופיל');
+      return null;
+    }
+  }
+
+  function updateCustomProfile(profileId, settings) {
+    try {
+      const profile = accessibilityState.profiles.find(p => p.id === profileId);
+      if (!profile) return false;
+      
+      profile.settings = { ...settings };
+      profile.updatedAt = Date.now();
+      accessibilityState.currentSettings = { ...settings };
+      saveProfilesToStorage();
+      renderCustomProfiles();
+      updateActiveProfileIndicator();
+      
+      showToast('פרופיל עודכן: ' + profile.name);
+      return true;
+    } catch (err) {
+      console.warn('Lior Accessibility: unable to update profile', err);
       return false;
     }
   }
 
-  function loadCustomProfile(name) {
+  function loadCustomProfile(profileId) {
     try {
-      const profiles = JSON.parse(localStorage.getItem(CUSTOM_PROFILES_KEY) || '{}');
-      const profile = profiles[name];
+      const profile = accessibilityState.profiles.find(p => p.id === profileId);
       if (!profile || !profile.settings) return false;
       
-      // Reset all toggles first
-      TOGGLES.forEach((toggleName) => {
-        applyToggle(toggleName, false);
-      });
+      // Apply settings to DOM (skip profile reset to keep activeProfileId)
+      applySettingsToDOM(profile.settings, true);
       
-      // Apply saved settings
-      Object.keys(profile.settings).forEach((toggleName) => {
-        if (TOGGLES.includes(toggleName)) {
-          applyToggle(toggleName, profile.settings[toggleName]);
-          persistToggle(toggleName, profile.settings[toggleName]);
+      // Update state
+      accessibilityState.currentSettings = { ...profile.settings };
+      accessibilityState.activeProfileId = profileId;
+      accessibilityState.settingsChangeCount = 0;
+      
+      // Persist to localStorage
+      Object.keys(profile.settings).forEach((name) => {
+        if (name === 'inc-text-level') {
+          localStorage.setItem(storageKey('inc-text-level'), profile.settings[name].toString());
+          if (profile.settings[name] > 0) {
+            localStorage.setItem(storageKey('inc-text'), '1');
+          }
+        } else if (TOGGLES.includes(name)) {
+          persistToggle(name, profile.settings[name]);
         }
       });
       
+      saveGlobalSettings();
       updateProfileStates();
-      showToast('פרופיל נטען: ' + name);
+      renderCustomProfiles();
+      updateActiveProfileIndicator();
+      showToast('פרופיל נטען: ' + profile.name);
       return true;
     } catch (err) {
       console.warn('Lior Accessibility: unable to load custom profile', err);
@@ -2421,13 +2684,22 @@
     }
   }
 
-  function deleteCustomProfile(name) {
+  function deleteCustomProfile(profileId) {
     try {
-      const profiles = JSON.parse(localStorage.getItem(CUSTOM_PROFILES_KEY) || '{}');
-      delete profiles[name];
-      localStorage.setItem(CUSTOM_PROFILES_KEY, JSON.stringify(profiles));
+      const profile = accessibilityState.profiles.find(p => p.id === profileId);
+      if (!profile) return false;
+      
+      const index = accessibilityState.profiles.findIndex(p => p.id === profileId);
+      accessibilityState.profiles.splice(index, 1);
+      
+      if (accessibilityState.activeProfileId === profileId) {
+        accessibilityState.activeProfileId = null;
+      }
+      
+      saveProfilesToStorage();
       renderCustomProfiles();
-      showToast('פרופיל נמחק: ' + name);
+      updateActiveProfileIndicator();
+      showToast('פרופיל נמחק: ' + profile.name);
       return true;
     } catch (err) {
       console.warn('Lior Accessibility: unable to delete custom profile', err);
@@ -2435,86 +2707,170 @@
     }
   }
 
-  function getCurrentSettings() {
-    const settings = {};
-    TOGGLES.forEach((name) => {
-      settings[name] = toggleState.get(name) || false;
-    });
-    return settings;
+  function checkAutoSaveSuggestion() {
+    // Suggest saving after 3-4 changes within 10 seconds
+    if (accessibilityState.settingsChangeCount >= 3 && 
+        accessibilityState.lastChangeTime && 
+        (Date.now() - accessibilityState.lastChangeTime) < 10000 &&
+        !accessibilityState.autoSaveSuggestionShown) {
+      
+      accessibilityState.autoSaveSuggestionShown = true;
+      showAutoSaveSuggestion();
+    }
+  }
+
+  function showAutoSaveSuggestion() {
+    const suggestion = doc.createElement('div');
+    suggestion.className = 'lior-acc-auto-save-suggestion';
+    suggestion.innerHTML = `
+      <div class="lior-acc-suggestion-content">
+        <span>נראה ששינית הרבה הגדרות. לשמור את זה בתור פרופיל מותאם?</span>
+        <div class="lior-acc-suggestion-actions">
+          <button class="lior-acc-suggestion-btn lior-acc-suggestion-yes">כן, שמור</button>
+          <button class="lior-acc-suggestion-btn lior-acc-suggestion-no">לא, תודה</button>
+        </div>
+      </div>
+    `;
+    
+    const rootEl = byId('lior-acc-root');
+    if (rootEl) {
+      rootEl.appendChild(suggestion);
+      
+      setTimeout(() => {
+        suggestion.classList.add('show');
+      }, 100);
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        if (suggestion.parentNode) {
+          suggestion.classList.remove('show');
+          setTimeout(() => {
+            if (suggestion.parentNode) {
+              suggestion.remove();
+            }
+          }, 300);
+        }
+      }, 5000);
+      
+      // Event listeners
+      suggestion.querySelector('.lior-acc-suggestion-yes')?.addEventListener('click', () => {
+        handleSaveProfile();
+        suggestion.classList.remove('show');
+        setTimeout(() => suggestion.remove(), 300);
+      });
+      
+      suggestion.querySelector('.lior-acc-suggestion-no')?.addEventListener('click', () => {
+        suggestion.classList.remove('show');
+        setTimeout(() => suggestion.remove(), 300);
+      });
+    }
   }
 
   function renderCustomProfiles() {
     const container = byId('lior-acc-custom-profiles-list');
     if (!container) return;
     
-    try {
-      const profiles = JSON.parse(localStorage.getItem(CUSTOM_PROFILES_KEY) || '{}');
-      const profileNames = Object.keys(profiles);
+    container.innerHTML = '';
+    
+    if (accessibilityState.profiles.length === 0) {
+      return;
+    }
+    
+    accessibilityState.profiles.forEach((profile) => {
+      const isActive = accessibilityState.activeProfileId === profile.id;
       
-      container.innerHTML = '';
+      const profileBtn = doc.createElement('button');
+      profileBtn.className = 'lior-acc-profile-toggle';
+      if (isActive) {
+        profileBtn.classList.add('active');
+      }
+      profileBtn.setAttribute('data-profile-id', profile.id);
+      profileBtn.setAttribute('type', 'button');
+      profileBtn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       
-      profileNames.forEach((name) => {
-        const profileBtn = doc.createElement('button');
-        profileBtn.className = 'lior-acc-profile-toggle';
-        profileBtn.setAttribute('data-custom-profile', name);
-        profileBtn.setAttribute('type', 'button');
-        profileBtn.setAttribute('aria-pressed', 'false');
-        
-        const nameSpan = doc.createElement('span');
-        nameSpan.className = 'lior-acc-profile-name';
-        nameSpan.textContent = name;
-        
-        const switchSpan = doc.createElement('span');
-        switchSpan.className = 'lior-acc-profile-switch';
-        
-        const deleteBtn = doc.createElement('button');
-        deleteBtn.className = 'lior-acc-profile-delete';
-        deleteBtn.setAttribute('type', 'button');
-        deleteBtn.setAttribute('aria-label', 'מחק פרופיל');
-        deleteBtn.textContent = '🗑️';
-        deleteBtn.style.cssText = 'background: transparent; border: none; padding: 4px 8px; cursor: pointer; font-size: 14px; margin-inline-start: 8px;';
-        deleteBtn.onclick = (e) => {
-          e.stopPropagation();
-          if (confirm('האם למחוק את הפרופיל "' + name + '"?')) {
-            deleteCustomProfile(name);
-          }
-        };
-        
-        profileBtn.appendChild(nameSpan);
-        profileBtn.appendChild(switchSpan);
-        profileBtn.appendChild(deleteBtn);
-        
-        profileBtn.addEventListener('click', () => {
-          loadCustomProfile(name);
-          // Update switch state
-          profileBtn.setAttribute('aria-pressed', 'true');
-          setTimeout(() => {
-            profileBtn.setAttribute('aria-pressed', 'false');
-          }, 500);
-        });
-        
-        container.appendChild(profileBtn);
+      const nameSpan = doc.createElement('span');
+      nameSpan.className = 'lior-acc-profile-name';
+      nameSpan.textContent = profile.name;
+      
+      const switchSpan = doc.createElement('span');
+      switchSpan.className = 'lior-acc-profile-switch';
+      
+      const deleteBtn = doc.createElement('button');
+      deleteBtn.className = 'lior-acc-profile-delete';
+      deleteBtn.setAttribute('type', 'button');
+      deleteBtn.setAttribute('aria-label', 'מחק פרופיל');
+      deleteBtn.textContent = '🗑️';
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (confirm('האם למחוק את הפרופיל "' + profile.name + '"?')) {
+          deleteCustomProfile(profile.id);
+        }
+      };
+      
+      profileBtn.appendChild(nameSpan);
+      profileBtn.appendChild(switchSpan);
+      profileBtn.appendChild(deleteBtn);
+      
+      profileBtn.addEventListener('click', () => {
+        loadCustomProfile(profile.id);
       });
-    } catch (err) {
-      console.warn('Lior Accessibility: unable to render custom profiles', err);
+      
+      container.appendChild(profileBtn);
+    });
+  }
+  
+  function updateActiveProfileIndicator() {
+    const activeProfile = accessibilityState.profiles.find(p => p.id === accessibilityState.activeProfileId);
+    const indicator = byId('lior-acc-active-profile-indicator');
+    
+    if (indicator) {
+      if (activeProfile) {
+        indicator.textContent = 'פרופיל פעיל: ' + activeProfile.name;
+        indicator.style.display = 'block';
+      } else {
+        indicator.textContent = '';
+        indicator.style.display = 'none';
+      }
     }
   }
 
   function handleSaveProfile() {
-    const name = prompt('הזן שם לפרופיל:');
-    if (!name || name.trim() === '') {
-      return;
-    }
-    
-    const settings = getCurrentSettings();
-    const hasActiveSettings = Object.values(settings).some(val => val === true);
+    const hasActiveProfile = accessibilityState.activeProfileId !== null;
+    const settings = getCurrentSettingsSnapshot();
+    const hasActiveSettings = Object.values(settings).some(val => val === true || (typeof val === 'number' && val > 0));
     
     if (!hasActiveSettings) {
       showToast('אנא הפעל לפחות הגדרה אחת לפני שמירת פרופיל');
       return;
     }
     
-    saveCustomProfile(name.trim(), settings);
+    if (hasActiveProfile) {
+      // Show update vs new save dialog
+      const action = confirm('פרופיל פעיל זוהה. לעדכן את הפרופיל הקיים או לשמור כפרופיל חדש?\n\nOK = עדכון פרופיל נוכחי\nביטול = שמירה כפרופיל חדש');
+      
+      if (action) {
+        // Update existing
+        updateCustomProfile(accessibilityState.activeProfileId, settings);
+      } else {
+        // Save as new
+        const name = prompt('הזן שם לפרופיל החדש:');
+        if (name && name.trim() !== '') {
+          const domainOnly = confirm('להחיל את הפרופיל הזה רק באתר הזה?');
+          saveCustomProfile(name.trim(), settings, domainOnly ? location.hostname : null);
+        }
+      }
+    } else {
+      // Save as new
+      const name = prompt('הזן שם לפרופיל:');
+      if (!name || name.trim() === '') {
+        return;
+      }
+      const domainOnly = confirm('להחיל את הפרופיל הזה רק באתר הזה?');
+      saveCustomProfile(name.trim(), settings, domainOnly ? location.hostname : null);
+    }
+    
+    renderCustomProfiles();
+    updateActiveProfileIndicator();
   }
 
   function openAccessibilityDeclaration() {
@@ -2568,7 +2924,7 @@
     detectLanguage();
     const lang = state.currentLang;
     const title = byId('lior-acc-title');
-    if (title) title.textContent = t('settings') + ' v0.1.32';
+    if (title) title.textContent = t('settings') + ' v0.1.4';
     doc.querySelectorAll('.lior-acc-toggle').forEach((btn) => {
       const name = btn.dataset.toggle || btn.dataset.action;
       if (!name) return;
@@ -2668,9 +3024,14 @@
         });
       });
 
+      // Initialize state
+      loadProfilesFromStorage();
+      accessibilityState.currentSettings = getCurrentSettingsSnapshot();
+      
       restoreToggles();
       updateProfileStates();
       renderCustomProfiles();
+      updateActiveProfileIndicator();
 
       const saveProfileBtn = byId('lior-acc-save-profile');
       if (saveProfileBtn) {
@@ -2767,7 +3128,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.1.32 loaded');
+      console.log('Lior Accessibility Widget v0.1.4 loaded');
     };
     
     // Start setup - will retry if elements are not ready
