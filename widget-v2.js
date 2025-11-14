@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.8.6)
+ * Lior Accessibility Widget v2.0 (v0.8.7)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -508,7 +508,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.8.6';
+  content: ' v0.8.7';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -867,7 +867,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.8.6';
+    content: ' v0.8.7';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -3098,19 +3098,8 @@
       overlay.style.display = 'none'; // Force hide even if animations are disabled
     }
 
-    // Close declaration modal if somehow open
-    if (declModal) {
-      declModal.classList.remove('show');
-      declModal.hidden = true;
-      declModal.setAttribute('aria-hidden', 'true');
-    }
-
-    // Close keyboard shortcuts modal if somehow open
-    if (keyboardModal) {
-      keyboardModal.classList.remove('show');
-      keyboardModal.hidden = true;
-      keyboardModal.setAttribute('aria-hidden', 'true');
-    }
+    // Don't close modals here - they should stay open until user closes them
+    // Modals are independent and should only close via their own close handlers
 
     // Remove root open class
     if (root) {
@@ -4119,7 +4108,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.8.6 loaded');
+      console.log('Lior Accessibility Widget v0.8.7 loaded');
     };
     
     // Start setup - will retry if elements are not ready
