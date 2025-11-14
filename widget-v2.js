@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.9.2)
+ * Lior Accessibility Widget v2.0 (v0.9.3)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -508,7 +508,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.9.2';
+  content: ' v0.9.3';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -867,7 +867,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.9.2';
+    content: ' v0.9.3';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -4134,7 +4134,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.9.2 loaded');
+      console.log('Lior Accessibility Widget v0.9.3 loaded');
     };
     
     // Start setup - will retry if elements are not ready
