@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.9.0)
+ * Lior Accessibility Widget v2.0 (v0.9.1)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -508,7 +508,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.9.0';
+  content: ' v0.9.1';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -867,7 +867,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.9.0';
+    content: ' v0.9.1';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -1184,7 +1184,7 @@
 }
 .lior-acc-save-text {
   position: relative;
-  top: 2px; /* Visual centering adjustment */
+  top: -3px; /* Visual centering adjustment - move text 3px up */
 }
 @media (max-width: 768px) {
   .lior-acc-profiles-section {
@@ -3292,6 +3292,26 @@
       });
     }
     
+    // Fix: Ensure overlay and inert states are properly released on mobile after profile activation
+    // This prevents screen freeze on mobile devices
+    if (window.innerWidth <= 768) {
+      const overlay = byId('lior-acc-overlay');
+      if (overlay && overlay.hidden === false) {
+        // Overlay should only be visible when panel is open
+        if (!state.open) {
+          overlay.hidden = true;
+          overlay.setAttribute('aria-hidden', 'true');
+          overlay.style.opacity = '0';
+          overlay.style.display = 'none';
+        }
+      }
+      // Ensure inert is released if panel is not open
+      if (!state.open) {
+        setOutsideInert(false);
+        doc.body.style.overflow = '';
+      }
+    }
+    
     const profileNames = {
       'vision': 'ראייה',
       'learning': 'לקויות למידה מורכבות',
@@ -4113,7 +4133,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.9.0 loaded');
+      console.log('Lior Accessibility Widget v0.9.1 loaded');
     };
     
     // Start setup - will retry if elements are not ready
