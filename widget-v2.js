@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.9.7)
+ * Lior Accessibility Widget v2.0 (v0.10.0)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -392,15 +392,33 @@
 .lior-acc-button:hover {
   transform: scale(1.1);
   box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  /* iOS-style ring on hover */
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
 }
 .lior-acc-button:active {
-  transform: scale(0.95);
+  transform: scale(0.97);
 }
 .lior-acc-button-icon {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+}
+.lior-acc-button-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background: #10b981;
+  border-radius: 50%;
+  border: 2px solid var(--lior-acc-bg);
+  display: none;
+  z-index: 1;
+}
+.lior-acc-button.has-active-settings .lior-acc-button-indicator {
+  display: block;
 }
 .lior-acc-button:focus {
   outline: var(--lior-acc-focus-width) solid var(--lior-acc-accent);
@@ -410,8 +428,10 @@
   outline: none;
 }
 .lior-acc-button:focus-visible {
-  outline: var(--lior-acc-focus-width) solid var(--lior-acc-accent);
-  outline-offset: var(--lior-acc-focus-offset);
+  outline: 3px solid var(--lior-acc-accent);
+  outline-offset: 3px;
+  /* Strong focus ring for keyboard accessibility */
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
 }
 
 .lior-acc-overlay {
@@ -508,7 +528,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.9.7';
+  content: ' v0.10.0';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -867,7 +887,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.9.7';
+    content: ' v0.10.0';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -1486,6 +1506,27 @@
 .lior-acc-category:nth-child(3) { animation-delay: 0.5s; }
 .lior-acc-category:nth-child(4) { animation-delay: 0.55s; }
 .lior-acc-category:nth-child(5) { animation-delay: 0.6s; }
+.lior-acc-category-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: var(--lior-acc-accent);
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-inline-start: 6px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.lior-acc-category-badge:not(:empty) {
+  opacity: 1;
+  transform: scale(1);
+}
 .lior-acc-category-header {
   width: 100%;
   display: flex;
@@ -2010,8 +2051,9 @@
   <div id="lior-acc-live-region" class="lior-acc-sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
   <button id="lior-acc-button" class="lior-acc-button" type="button"
     aria-haspopup="dialog" aria-controls="lior-acc-panel" aria-expanded="false"
-    aria-label="פתח תפריט נגישות">
+    aria-pressed="false" aria-label="פתח תפריט נגישות">
     <img src="${logoUrl || 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-Z5pQb64527QqrgGwIDqkDyFB7uVs96.jpeg'}" alt="" aria-hidden="true" class="lior-acc-button-icon">
+    <span class="lior-acc-button-indicator" aria-hidden="true"></span>
   </button>
   <div id="lior-acc-overlay" class="lior-acc-overlay" hidden></div>
   <div id="lior-acc-panel" class="lior-acc-panel" role="dialog" aria-modal="true" aria-labelledby="lior-acc-title" hidden>
@@ -2067,9 +2109,10 @@
         <h3 class="lior-acc-section-title">הגדרות</h3>
         
         <div class="lior-acc-category">
-          <button class="lior-acc-category-header" type="button" aria-expanded="false">
+          <button class="lior-acc-category-header" type="button" aria-expanded="false" data-category="display">
             <span class="lior-acc-category-icon">${icons.monitor}</span>
             <span>תצוגה</span>
+            <span class="lior-acc-category-badge" aria-hidden="true"></span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
           <div class="lior-acc-category-content" hidden>
@@ -2114,9 +2157,10 @@
         </div>
 
         <div class="lior-acc-category">
-          <button class="lior-acc-category-header" type="button" aria-expanded="false">
+          <button class="lior-acc-category-header" type="button" aria-expanded="false" data-category="text">
             <span class="lior-acc-category-icon">${icons.type}</span>
             <span>טקסט</span>
+            <span class="lior-acc-category-badge" aria-hidden="true"></span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
           <div class="lior-acc-category-content" hidden>
@@ -2140,9 +2184,10 @@
         </div>
 
         <div class="lior-acc-category">
-          <button class="lior-acc-category-header" type="button" aria-expanded="false">
+          <button class="lior-acc-category-header" type="button" aria-expanded="false" data-category="links">
             <span class="lior-acc-category-icon">${icons.link}</span>
             <span>קישורים</span>
+            <span class="lior-acc-category-badge" aria-hidden="true"></span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
           <div class="lior-acc-category-content" hidden>
@@ -2166,9 +2211,10 @@
         </div>
 
         <div class="lior-acc-category">
-          <button class="lior-acc-category-header" type="button" aria-expanded="false">
+          <button class="lior-acc-category-header" type="button" aria-expanded="false" data-category="navigation">
             <span class="lior-acc-category-icon">${icons.compass}</span>
             <span>ניווט</span>
+            <span class="lior-acc-category-badge" aria-hidden="true"></span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
           <div class="lior-acc-category-content" hidden>
@@ -2205,9 +2251,10 @@
         </div>
 
         <div class="lior-acc-category">
-          <button class="lior-acc-category-header" type="button" aria-expanded="false">
+          <button class="lior-acc-category-header" type="button" aria-expanded="false" data-category="animations">
             <span class="lior-acc-category-icon">${icons.play}</span>
             <span>אנימציות</span>
+            <span class="lior-acc-category-badge" aria-hidden="true"></span>
             <span class="lior-acc-category-arrow">▼</span>
           </button>
           <div class="lior-acc-category-content" hidden>
@@ -2596,6 +2643,50 @@
     // Update save button state after settings change
     requestAnimationFrame(() => {
       updateSaveButtonState();
+      updateButtonIndicator();
+      updateCategoryBadges();
+    });
+  }
+  
+  function updateButtonIndicator() {
+    const button = byId('lior-acc-button');
+    if (!button) return;
+    
+    // Check if any settings are active
+    const hasActiveSettings = Object.values(accessibilityState.currentSettings).some(
+      val => val === true || (typeof val === 'number' && val > 0)
+    );
+    
+    if (hasActiveSettings) {
+      button.classList.add('has-active-settings');
+    } else {
+      button.classList.remove('has-active-settings');
+    }
+  }
+  
+  function updateCategoryBadges() {
+    const categoryMap = {
+      'display': ['inc-text', 'high-contrast', 'dark-contrast', 'grayscale', 'invert'],
+      'text': ['spacing', 'dyslexia'],
+      'links': ['underline-links', 'highlight-links'],
+      'navigation': ['big-cursor', 'reading-focus', 'focus-highlight'],
+      'animations': ['no-anim']
+    };
+    
+    Object.keys(categoryMap).forEach(category => {
+      const header = doc.querySelector(`[data-category="${category}"]`);
+      if (!header) return;
+      const badge = header.querySelector('.lior-acc-category-badge');
+      if (!badge) return;
+      
+      const toggles = categoryMap[category];
+      const activeCount = toggles.filter(name => toggleState.get(name)).length;
+      
+      if (activeCount > 0) {
+        badge.textContent = activeCount.toString();
+      } else {
+        badge.textContent = '';
+      }
     });
   }
   
@@ -2972,6 +3063,7 @@
     state.lastFocused = doc.activeElement;
     state.open = true;
     button.setAttribute('aria-expanded', 'true');
+    button.setAttribute('aria-pressed', 'true');
     panel.hidden = false;
     panel.setAttribute('aria-hidden', 'false');
     panel.setAttribute('tabindex', '-1');
@@ -3186,6 +3278,7 @@
     // Restore focus to button
     if (button) {
       button.setAttribute('aria-expanded', 'false');
+      button.setAttribute('aria-pressed', 'false');
       button.focus();
     }
 
@@ -4067,6 +4160,8 @@
       
       // Initialize save button state
       updateSaveButtonState();
+      updateButtonIndicator();
+      updateCategoryBadges();
 
       const saveProfileBtn = byId('lior-acc-save-profile');
       if (saveProfileBtn) {
@@ -4189,7 +4284,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.9.7 loaded');
+      console.log('Lior Accessibility Widget v0.10.0 loaded');
     };
     
     // Start setup - will retry if elements are not ready
