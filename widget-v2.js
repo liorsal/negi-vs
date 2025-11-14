@@ -3125,6 +3125,8 @@
     if (htmlRoot) {
       htmlRoot.classList.remove('acc-reading-focus');
     }
+    // Check if reading-focus was active before forcing update
+    const wasReadingFocusActive = toggleState.get('reading-focus');
     // Force update state
     toggleState.set('reading-focus', false);
     // Force update button
@@ -3132,8 +3134,8 @@
     if (rfBtn) {
       rfBtn.setAttribute('aria-pressed', 'false');
     }
-    // Also update via applyToggle for consistency
-    if (toggleState.get('reading-focus')) {
+    // Also update via applyToggle for consistency if it was active
+    if (wasReadingFocusActive) {
       applyToggle('reading-focus', false, true); // Disable reading-focus, skip profile reset
       persistToggle('reading-focus', false);     // Update localStorage
     }
