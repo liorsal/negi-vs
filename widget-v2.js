@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.9.6)
+ * Lior Accessibility Widget v2.0 (v0.9.7)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -508,7 +508,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.9.6';
+  content: ' v0.9.7';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -867,7 +867,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.9.6';
+    content: ' v0.9.7';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -2878,21 +2878,31 @@
     if (state.open) {
       closePanelWithAnimation();
       // Wait a bit for panel to close before checking selection
+      // On mobile, need more time for panel to fully close
+      const isMobile = window.innerWidth <= 768;
+      const closeDelay = isMobile ? 800 : 500;
       setTimeout(() => {
         const selection = window.getSelection().toString().trim();
         if (!selection || selection.length === 0) {
-          showToast('אנא בחר טקסט להקראה ולחץ שוב על "קריאה בקול"');
+          const message = isMobile 
+            ? 'אנא לחץ ארוך על הטקסט לבחירה, ואז לחץ שוב על "קריאה בקול"'
+            : 'אנא בחר טקסט להקראה ולחץ שוב על "קריאה בקול"';
+          showToast(message);
           return;
         }
         startReading(selection);
-      }, 500);
+      }, closeDelay);
       return;
     }
 
     // Get selected text
     const selection = window.getSelection().toString().trim();
     if (!selection || selection.length === 0) {
-      showToast('אנא בחר טקסט להקראה ולחץ שוב על "קריאה בקול"');
+      const isMobile = window.innerWidth <= 768;
+      const message = isMobile 
+        ? 'אנא לחץ ארוך על הטקסט לבחירה, ואז לחץ שוב על "קריאה בקול"'
+        : 'אנא בחר טקסט להקראה ולחץ שוב על "קריאה בקול"';
+      showToast(message);
       return;
     }
 
@@ -2929,7 +2939,16 @@
     
     // Start speaking
     isSpeaking = true;
+    
+    // On mobile, some browsers need a small delay before speaking
+    if (isMobile) {
+      // Small delay for mobile browsers to initialize speech synthesis
+      setTimeout(() => {
     speechSynthesis.speak(utterance);
+      }, 100);
+    } else {
+      speechSynthesis.speak(utterance);
+    }
     
     // Update button icon
     const button = doc.querySelector('[data-action="text-to-speech"]');
@@ -4170,7 +4189,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.9.6 loaded');
+      console.log('Lior Accessibility Widget v0.9.7 loaded');
     };
     
     // Start setup - will retry if elements are not ready
