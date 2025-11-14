@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.10.0)
+ * Lior Accessibility Widget v2.0 (v0.10.1)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -528,7 +528,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.10.0';
+  content: ' v0.10.1';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -887,7 +887,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.10.0';
+    content: ' v0.10.1';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -3296,27 +3296,29 @@
 
   function handleDocumentKeydown(event) {
     const key = typeof event.key === 'string' ? event.key : '';
+    const code = typeof event.code === 'string' ? event.code : '';
     
     // === קיצורי מקלדת גלובליים לפרופילים ===
+    // Use event.code for physical key position (works with any keyboard layout)
     if (event.altKey && event.shiftKey) {
-      switch (key) {
-        case '1':
+      switch (code) {
+        case 'Digit1':
           event.preventDefault();
           enableProfile('vision');
           return;
-        case '2':
+        case 'Digit2':
           event.preventDefault();
           enableProfile('learning');
           return;
-        case '3':
+        case 'Digit3':
           event.preventDefault();
           enableProfile('epilepsy');
           return;
-        case '4':
+        case 'Digit4':
           event.preventDefault();
           enableProfile('adhd');
           return;
-        case '5':
+        case 'Digit5':
           event.preventDefault();
           enableProfile('dyslexia');
           return;
@@ -3324,7 +3326,8 @@
     }
     
     // קיצור לפתיחת/סגירת תפריט הנגישות
-    if (event.altKey && key.toLowerCase() === 'a') {
+    // Use event.code for physical key position (works with Hebrew keyboard)
+    if (event.altKey && code === 'KeyA') {
       event.preventDefault();
       state.open ? closePanel() : openPanel();
       return;
@@ -3333,6 +3336,7 @@
     // מכאן והלאה – קיצורי מקלדת שפועלים *רק כשפאנל פתוח*
     if (!state.open) return;
     
+    // Escape and Tab work fine with event.key regardless of keyboard layout
     if (key === 'Escape') {
       event.preventDefault();
       closePanel();
@@ -4286,7 +4290,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.10.0 loaded');
+      console.log('Lior Accessibility Widget v0.10.1 loaded');
     };
     
     // Start setup - will retry if elements are not ready
