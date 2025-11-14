@@ -3095,12 +3095,15 @@
       panel.style.opacity = '';
     }
 
-    // Close overlay - ensure it's fully hidden even with no-anim active
+    // BULLDOZER: Always force-close overlay with all possible styles
+    // This ensures the overlay never blocks the page, even if state is out of sync
     if (overlay) {
       overlay.hidden = true;
       overlay.setAttribute('aria-hidden', 'true');
+      overlay.style.display = 'none';
+      overlay.style.pointerEvents = 'none';
       overlay.style.opacity = '0';
-      overlay.style.display = 'none'; // Force hide even if animations are disabled
+      overlay.style.visibility = 'hidden';
     }
 
     // Don't close modals here - they should stay open until user closes them
@@ -3111,22 +3114,29 @@
       root.classList.remove('lior-acc-open');
     }
 
-    // Ensure body overflow is restored
+    // BULLDOZER: Always restore body overflow - no conditions
     doc.body.style.overflow = '';
 
-    // Remove reading-focus class directly from HTML element (even if state is out of sync)
+    // BULLDOZER: Always release inert elements - no conditions
+    setOutsideInert(false);
+
+    // NUCLEAR OPTION: Force-disable reading-focus even if state is out of sync
+    // Remove class from HTML element
     if (htmlRoot) {
       htmlRoot.classList.remove('acc-reading-focus');
     }
-
-    // Disable reading-focus toggle if active (via state)
+    // Force update state
+    toggleState.set('reading-focus', false);
+    // Force update button
+    const rfBtn = toggleButtons.get('reading-focus');
+    if (rfBtn) {
+      rfBtn.setAttribute('aria-pressed', 'false');
+    }
+    // Also update via applyToggle for consistency
     if (toggleState.get('reading-focus')) {
       applyToggle('reading-focus', false, true); // Disable reading-focus, skip profile reset
       persistToggle('reading-focus', false);     // Update localStorage
     }
-
-    // Release all inert elements
-    setOutsideInert(false);
 
     // Restore focus to button
     if (button) {
