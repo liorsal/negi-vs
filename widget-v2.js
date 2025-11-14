@@ -3380,6 +3380,8 @@
       if (cls.startsWith('acc-')) root.classList.remove(cls);
     });
     TOGGLES.forEach((name) => toggleButtons.get(name)?.setAttribute('aria-pressed', 'false'));
+    updateButtonIndicator();
+    updateCategoryBadges();
     announce(t('resetDone'), t('reset'));
     showToast(t('resetDone'));
   }
