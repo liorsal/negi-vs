@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.9.1)
+ * Lior Accessibility Widget v2.0 (v0.9.2)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -508,7 +508,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.9.1';
+  content: ' v0.9.2';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -867,7 +867,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.9.1';
+    content: ' v0.9.2';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -1182,9 +1182,10 @@
   justify-content: center;
   gap: 8px;
 }
-.lior-acc-save-text {
+.lior-acc-save-text,
+.lior-acc-save-icon {
   position: relative;
-  top: -3px; /* Visual centering adjustment - move text 3px up */
+  top: -5px; /* Visual centering adjustment - move text and icon 5px up */
 }
 @media (max-width: 768px) {
   .lior-acc-profiles-section {
@@ -4133,7 +4134,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.9.1 loaded');
+      console.log('Lior Accessibility Widget v0.9.2 loaded');
     };
     
     // Start setup - will retry if elements are not ready
