@@ -1,5 +1,5 @@
 /**
- * Lior Accessibility Widget v2.0 (v0.8.5)
+ * Lior Accessibility Widget v2.0 (v0.8.6)
  * WCAG 2.1 AA & IS 5568 compliant
  * Self-contained widget - includes HTML, CSS, and JS
  * 
@@ -508,7 +508,7 @@
   line-height: 1.3;
 }
 .lior-acc-panel-header h2::after {
-  content: ' v0.8.5';
+  content: ' v0.8.6';
   font-size: 12px;
   font-weight: 400;
   color: #999;
@@ -867,7 +867,7 @@
     margin-top: 10px;
   }
   .lior-acc-panel-header h2::after {
-    content: ' v0.8.5';
+    content: ' v0.8.6';
     font-size: 12px;
     font-weight: 400;
     color: #999;
@@ -3084,17 +3084,18 @@
     // Close panel itself
     if (panel) {
       panel.classList.remove('show');
-      panel.hidden = true;
-      panel.setAttribute('aria-hidden', 'true');
+        panel.hidden = true;
+        panel.setAttribute('aria-hidden', 'true');
       panel.style.transform = '';
       panel.style.opacity = '';
     }
 
-    // Close overlay
+    // Close overlay - ensure it's fully hidden even with no-anim active
     if (overlay) {
       overlay.hidden = true;
       overlay.setAttribute('aria-hidden', 'true');
       overlay.style.opacity = '0';
+      overlay.style.display = 'none'; // Force hide even if animations are disabled
     }
 
     // Close declaration modal if somehow open
@@ -4118,7 +4119,7 @@
 
       doc.addEventListener('keydown', handleDocumentKeydown, true);
       initAPI();
-      console.log('Lior Accessibility Widget v0.8.5 loaded');
+      console.log('Lior Accessibility Widget v0.8.6 loaded');
     };
     
     // Start setup - will retry if elements are not ready
